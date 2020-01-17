@@ -1,0 +1,10 @@
+Q19. 
+	Enc(key, plaintext(partial)) = ciphertext(partial)
+	7200 keys / 7200 timestamps in seconds
+	1/7200
+
+	for i in 1...7200
+		Enc(key(i), plaintext(partial)) = ciphertext(partial)
+resource: 
+	handsonsecurity.net
+	Kevin Du on Youtube
