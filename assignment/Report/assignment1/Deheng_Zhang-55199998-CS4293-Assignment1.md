@@ -74,9 +74,10 @@
 
       ![1579328805721](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579328805721.png)
 
-  
 
-### Task 2
+-----------------------------
+
+### Task 2: Encryption using Different Ciphers and Modes
 
 * Observation
 
@@ -86,31 +87,91 @@
 
     ![1579342171019](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579342171019.png)
 
+    * encrypted binary file
+
     ![1579342102099](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579342102099.png)
+
+    * decrypted file
 
     ![1579342144057](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579342144057.png)
 
   * Use `-bf-cbc`
 
+    * command line
+
     ![1579342370293](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579342370293.png)
 
+    * encrypted binary file
+
     ![1579342277795](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579342277795.png)
+
+    * decrypted file
 
     ![1579342326581](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579342326581.png)
 
   * Use `-aes-128-cfb`
 
+    * command
+
     ![1579342541148](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579342541148.png)
 
+    * encrypted binary file
+
     ![1579342518751](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579342518751.png)
+
+    * decrypted file
 
     ![1579342495551](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579342495551.png)
 
   * Use different algorithms to encode and decode
 
+    * command line
+
     ![1579342655197](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579342655197.png)
 
+    * decrypted file by using different algorithm => does not work (use wrong key to decrypt also doesn’t work)
+
     ![1579342634791](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579342634791.png)
+
+--------------------------------
+
+### Task 3: Encryption Mode - ECB vs. CBC
+
+* Observation
+
+  * Command line
+
+    ![1579410582687](1579410582687.png)
+
+  * Comparison between three pictures
+
+    ![1579410767273](1579410767273.png)
+
+* Explanation: ECB is basically raw cipher , while CBC is step-by-step cipher which takes the output of the previous cipher and performs XOR with a block of plaintext. The first output is produced by first plaintext block and initialization vector. Therefore, ECB will preserve some features of the original image, while CBC will not. 
+
+------------------------------------
+
+### Task 4: Padding
+
+* Observation
+
+  * ECB
+
+    ![1579412656739](1579412656739.png)
+
+  * CBC
+
+    ![1579412044015](1579412044015.png)
+
+  * CFB
+
+    ![1579412947219](1579412947219.png)
+
+  * OFB
+
+    ![1579413112390](1579413112390.png)
+
+* Explanation
 
 ## MD5 Collision Attack
 
