@@ -186,21 +186,49 @@
 
 ### Task 5: Error Propagation – Corrupted Cipher Text
 
-* Create: Use `generator.py`: 
+* Observation
 
-  ```python
-  with open("1000bytes.txt", "w") as file:
-      for i in range(0, 1000):
-          file.write(str(i%10))
-  ```
+  * Create: Use `generator.py`: 
 
-  ![Screen Shot 2020-01-20 at 9.38.37 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 9.38.37 PM.png)
+    ```python
+    with open("1000bytes.txt", "w") as file:
+        for i in range(0, 1000):
+            file.write(str(i%10))
+    ```
 
-* Encrypt (Use ECB as an example)
+    ![Screen Shot 2020-01-20 at 9.38.37 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 9.38.37 PM.png)
 
-  ![Screen Shot 2020-01-20 at 9.43.01 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 9.43.01 PM.png)
+  * Encrypt (Use ECB as an example)
 
-* 
+    ![Screen Shot 2020-01-20 at 9.43.01 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 9.43.01 PM.png)
+
+  * Edit: I use [online bless](<https://hexed.it/?hl=en>) to simulate the data corruption: 
+
+    ![Screen Shot 2020-01-20 at 10.05.04 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.05.04 PM.png)
+
+  * Decryption: CFB and OFB modes can be decrypted, while decryption of ECB and CBC will generate error message
+
+    ![Screen Shot 2020-01-20 at 10.16.17 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.16.17 PM.png)
+
+  * Files After Decryption:  
+
+    * ECB: 
+
+      ![Screen Shot 2020-01-20 at 10.19.06 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.19.06 PM.png)
+
+    * CBC: 
+
+      ![Screen Shot 2020-01-20 at 10.21.10 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.21.10 PM.png)
+
+    * CFB: 
+
+      ![Screen Shot 2020-01-20 at 10.20.01 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.20.01 PM.png)
+
+    * OFB: 
+
+      ![Screen Shot 2020-01-20 at 10.21.39 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.21.39 PM.png)
+
+* Explanation: 
 
 ---------------
 
