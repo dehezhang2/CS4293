@@ -74,7 +74,6 @@
 
       ![1579328805721](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579328805721.png)
 
-
 -----------------------------
 
 ### Task 2: Encryption using Different Ciphers and Modes
@@ -141,11 +140,11 @@
 
   * Command line
 
-    ![1579410582687](1579410582687.png)
+    ![1579410582687](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579410582687.png)
 
   * Comparison between three pictures
 
-    ![1579410767273](1579410767273.png)
+    ![1579410767273](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579410767273.png)
 
 * Explanation: ECB is basically raw cipher , while CBC is step-by-step cipher which takes the output of the previous cipher and performs XOR with a block of plaintext. The first output is produced by first plaintext block and initialization vector. Therefore, ECB will preserve some features of the original image, while CBC will not. 
 
@@ -155,23 +154,55 @@
 
 * Observation
 
-  * ECB
+  * ECB: Has padding
 
-    ![1579412656739](1579412656739.png)
+    ![1579412656739](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579412656739.png)
 
-  * CBC
+  * CBC: Has padding
 
-    ![1579412044015](1579412044015.png)
+    ![1579412044015](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579412044015.png)
 
-  * CFB
+  * CFB: No padding
 
-    ![1579412947219](1579412947219.png)
+    ![1579412947219](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579412947219.png)
 
-  * OFB
+  * OFB: No padding
 
-    ![1579413112390](1579413112390.png)
+    ![1579413112390](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579413112390.png)
 
-* Explanation
+* Explanation: 
+
+  * The block ciphers require specific block size. 
+
+  * Once the plaintext is not dividable to equal-sized blocks, there will be exactly one smaller block, which will be the last block in the encryption pipeline. 
+
+  * For modes CFB and OFB, the last block of plaintext will not be used by the block cipher (as shown below).
+
+    ![Screen Shot 2020-01-19 at 3.47.57 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-19 at 3.47.57 PM.png)
+
+    ![Screen Shot 2020-01-19 at 3.48.03 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-19 at 3.48.03 PM.png)
+
+------------------
+
+### Task 5: Error Propagation – Corrupted Cipher Text
+
+* Create: Use `generator.py`: 
+
+  ```python
+  with open("1000bytes.txt", "w") as file:
+      for i in range(0, 1000):
+          file.write(str(i%10))
+  ```
+
+  ![Screen Shot 2020-01-20 at 9.38.37 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 9.38.37 PM.png)
+
+* Encrypt (Use ECB as an example)
+
+  ![Screen Shot 2020-01-20 at 9.43.01 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 9.43.01 PM.png)
+
+* 
+
+---------------
 
 ## MD5 Collision Attack
 
@@ -183,5 +214,31 @@
 
 ## Pseudo Random Number Generation
 
+### Task 18: Generate Encryption Key in a Wrong Way
 
+* Observation
 
+  * With `srand`: Seems right.
+
+    ![Screen Shot 2020-01-19 at 4.01.19 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-19 at 4.01.19 PM.png)
+
+  * Without `srand`: All the “random” numbers are the same.
+
+    ![Screen Shot 2020-01-19 at 4.03.03 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-19 at 4.03.03 PM.png)
+
+* Explanation: 
+
+  * `srand` will pass a seed to the `c++` random number generator. And the `rand` function will generate a pseudo random number based on the given seed. 
+  * `time` function is used to use the current time as the seed, since the number genrating function is highly non-linear, the result will be partialy “random”. 
+
+---------
+
+### Task 19: Guessing the Key
+
+* Command line: 
+
+  ![Screen Shot 2020-01-19 at 6.20.14 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-19 at 6.20.14 PM.png)
+
+* 
+
+---------
