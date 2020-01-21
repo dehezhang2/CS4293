@@ -186,7 +186,7 @@
 
 ### Task 5: Error Propagation – Corrupted Cipher Text
 
-* Answer: The decryped text in ECB mode will have only one corrputed byte (the 55th byte), and the decrypted text in other mode will only preserve the first few blocks (before the 55th bytes). 
+* Answer: The decryped text in ECB mode will have only one corrputed block (the block with the 55th byte), and the decrypted text in other mode will only preserve the first few blocks (before the block with the 55th bytes). 
 
 * Observation
 
@@ -208,27 +208,23 @@
 
     ![Screen Shot 2020-01-20 at 10.05.04 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.05.04 PM.png)
 
-  * Decryption: 
+  * Decryption: Decryption:  
 
-    
+    * ECB: The result is the same as I expected, each block is 128 bits (16 bytes), and the forth block (with 55th byte) is corrupted, other block are recovered. 
 
-  * Files After Decryption:  
+      ![Screen Shot 2020-01-21 at 4.58.09 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-21 at 4.58.09 PM.png)
 
-    * ECB: 
+    * CBC: The result is the same as I expected, all blocks are corrupted
 
-      
+      ![Screen Shot 2020-01-21 at 5.00.36 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-21 at 5.00.36 PM.png)
 
-    * CBC: 
+    * CFB: The result is different as I expected, the 65th byte and the 75th - 90th bytes are corrupted. 
 
-      
+      ![Screen Shot 2020-01-21 at 5.04.39 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-21 at 5.04.39 PM.png)
 
-    * CFB: 
+    * OFB: The result is different as I expected, only 55-th byte is corrupted. 
 
-      
-
-    * OFB: 
-
-      
+      ![Screen Shot 2020-01-21 at 5.10.06 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-21 at 5.10.06 PM.png)
 
 * Explanation: The result is not fully fitted to my expectation. For ECB and CBC, there is padding scheme. Therefore, the ECB 
 
