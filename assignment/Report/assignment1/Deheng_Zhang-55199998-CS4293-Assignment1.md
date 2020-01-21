@@ -186,6 +186,8 @@
 
 ### Task 5: Error Propagation – Corrupted Cipher Text
 
+* Answer: The decryped text in ECB mode will have only one corrputed byte, and the decrypted text in other mode will only preserve the first few blocks (before the $55-th$ bytes). 
+
 * Observation
 
   * Create: Use `generator.py`: 
@@ -206,7 +208,7 @@
 
     ![Screen Shot 2020-01-20 at 10.05.04 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.05.04 PM.png)
 
-  * Decryption: CFB and OFB modes can be decrypted, while decryption of ECB and CBC will generate error message
+  * Decryption: 
 
     ![Screen Shot 2020-01-20 at 10.16.17 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.16.17 PM.png)
 
@@ -228,7 +230,7 @@
 
       ![Screen Shot 2020-01-20 at 10.21.39 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.21.39 PM.png)
 
-* Explanation: 
+* Explanation: The result is not fully fitted to my expectation. For ECB and CBC, there is padding scheme. Therefore, the ECB 
 
 ---------------
 
