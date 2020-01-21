@@ -186,7 +186,7 @@
 
 ### Task 5: Error Propagation – Corrupted Cipher Text
 
-* Answer: The decryped text in ECB mode will have only one corrputed byte, and the decrypted text in other mode will only preserve the first few blocks (before the $55-th$ bytes). 
+* Answer: The decryped text in ECB mode will have only one corrputed byte (the 55th byte), and the decrypted text in other mode will only preserve the first few blocks (before the 55th bytes). 
 
 * Observation
 
@@ -210,25 +210,25 @@
 
   * Decryption: 
 
-    ![Screen Shot 2020-01-20 at 10.16.17 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.16.17 PM.png)
+    
 
   * Files After Decryption:  
 
     * ECB: 
 
-      ![Screen Shot 2020-01-20 at 10.19.06 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.19.06 PM.png)
+      
 
     * CBC: 
 
-      ![Screen Shot 2020-01-20 at 10.21.10 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.21.10 PM.png)
+      
 
     * CFB: 
 
-      ![Screen Shot 2020-01-20 at 10.20.01 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.20.01 PM.png)
+      
 
     * OFB: 
 
-      ![Screen Shot 2020-01-20 at 10.21.39 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-20 at 10.21.39 PM.png)
+      
 
 * Explanation: The result is not fully fitted to my expectation. For ECB and CBC, there is padding scheme. Therefore, the ECB 
 
