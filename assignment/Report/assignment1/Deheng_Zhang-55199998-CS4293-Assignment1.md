@@ -1,5 +1,7 @@
 # Report of CS4293 Assignment 1
 
+[TOC]
+
 ## Secret-Key Encryption
 
 ### Task 1:  Frequency Analysis Against Monoalphabetic Substitution Cipher
@@ -146,7 +148,7 @@
 
     ![1579410767273](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579410767273.png)
 
-* Explanation: ECB is basically raw cipher , while CBC is step-by-step cipher which takes the output of the previous cipher and performs XOR with a block of plaintext. The first output is produced by first plaintext block and initialization vector. Therefore, ECB will preserve some features of the original image, while CBC will not. 
+* Explanation: ECB is basically raw cipher (i.e. same input and key will result into same cipher text) , while CBC is step-by-step cipher which takes the output of the previous cipher and performs XOR with a block of plaintext. The first output is produced by first plaintext block and initialization vector. Therefore, ECB will preserve some features of the original image, while CBC will not. 
 
 ------------------------------------
 
@@ -186,7 +188,7 @@
 
 ### Task 5: Error Propagation – Corrupted Cipher Text
 
-* Answer: The decryped text in ECB mode will have only one corrputed block (the block with the 55th byte), and the decrypted text in other mode will only preserve the first few blocks (before the block with the 55th bytes). 
+* Answer: The number of blocks corrupted in ECB, CBC, CFB, OFB are 1 block, 2 blocks, 2 blocks, and 1 block respectively. 
 
 * Observation
 
@@ -210,31 +212,168 @@
 
   * Decryption: Decryption:  
 
-    * ECB: The result is the same as I expected, each block is 128 bits (16 bytes), and the forth block (with 55th byte) is corrupted, other block are recovered. 
+    * ECB: The result is the same as I expected, only one block is corrupted. Besides, all bytes in the corrupted block is corrupted. 
 
-      ![Screen Shot 2020-01-21 at 4.58.09 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-21 at 4.58.09 PM.png)
+      ![Screen Shot 2020-02-22 at 5.15.16 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-02-22 at 5.15.16 PM-2362934.png)
 
-    * CBC: The result is the same as I expected, all blocks are corrupted
+    * CBC: The result is the same as I expected, only two blocks are corrupted. Besides, all bytes in the corrupted block is corrupted while only one byte in the next block is corrupted
 
-      ![Screen Shot 2020-01-21 at 5.00.36 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-21 at 5.00.36 PM.png)
+      ![Screen Shot 2020-02-22 at 5.11.05 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-02-22 at 5.11.05 PM-2362685.png)
 
-    * CFB: The result is different as I expected, the 65th byte and the 75th - 90th bytes are corrupted. 
+    * CFB: The result is the same as I expected, only two blocks are corrupted. Besides, **only one byte in the corrupted block is corrupted while all bytes in the next block is corrupted**
 
-      ![Screen Shot 2020-01-21 at 5.04.39 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-21 at 5.04.39 PM.png)
+      ![Screen Shot 2020-02-22 at 5.19.47 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-02-22 at 5.19.47 PM.png)
 
-    * OFB: The result is different as I expected, only 55-th byte is corrupted. 
+    * OFB: The result is the same as I expected, only one block is corrupted. Besides, only one byte (the 55th) is corrupted
 
-      ![Screen Shot 2020-01-21 at 5.10.06 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-21 at 5.10.06 PM.png)
+      ![Screen Shot 2020-02-22 at 5.21.33 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-02-22 at 5.21.33 PM.png)
 
-* Explanation: The result is not fully fitted to my expectation. For ECB and CBC, there is padding scheme. Therefore, the ECB 
+* Explanation (red color represents bit error):
 
----------------
+  * Notice that encryption function $E​$ and decryption function $D​$ makes sure **each bits of output are dependent to each bits of input**, while each bits of output of XOR is only dependent on two bits of two inputs. 
+
+  * ECB: Because only $\color{red}{P_i} = D_k(\color{red}{C_i})​$ depends on the error block. 
+
+  * CBC: Because for CBC decryption
+    $$
+    \color{red}{P_i }= D_k(\color{red}{C_i})\oplus C_{i-1}, \color{red}{P_{i+1}} = D_k(C_{i+1})\oplus\color{red}{ C_{i}}
+    $$
+
+  * CFB: Because for CFB decryption
+    $$
+    \color{red}{P_i}= E_k({C_{i-1}})\oplus \color{red}{C_{i}}, \color{red}{P_{i+1}} = E_k(\color{red}{C_{i}})\oplus {C_{i+1}}
+    $$
+
+  * OFB: Because for CFB decruption
+    $$
+    \color{red}{P_i} = \color{red}{C_i} \oplus E_k^{(i+1)}(IV) \\
+    E^{(i+1)}_k\ represents\ apply\ encryption\ for\ i+1\ times
+    $$
+
+-----------------------
+
+### Task 6: Initial Vector (IV)
+
+#### Task 6.1
+
+* Observation: The same plaintext with same key and same IV results in same cipher text, while different IV results in different cipher text
+
+  ![Screen Shot 2020-02-22 at 6.10.43 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-02-22 at 6.10.43 PM.png)
+
+* Explanation: IV should be unique to make sure the cipher text is different for two encryption with same plain text and key to avoid attacking. 
+
+#### Task 6.2
+
+* Answer: P2 can be decrypted because:
+  $$
+  {C1} = {P1_0} \oplus E^{(0+1)}(key,IV)||{P1_1} \oplus E^{(1+1)}(key,IV)||...||{P1_n} \oplus E_k^{(n+1)}(IV) \\
+  {C2} = {P2_0} \oplus E^{(0+1)}(key,IV)||{P2_1} \oplus E^{(1+1)}(key,IV)||...||{P2_n} \oplus E_k^{(n+1)}(IV) \\
+  P1 \oplus C1 \oplus C2 = P2_0 || P2_1 || ... || P2_n = P2
+  $$
+
+* Code: 
+
+  ![Screen Shot 2020-02-22 at 6.45.55 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-02-22 at 6.45.55 PM.png)
+
+* If we replace OFB with CFB: 
+  $$
+  C1 = E(key, IV) \oplus P1_0 || E(key, C1_0) \oplus P1_1 || ... || E(key, C1_{n-1}) \oplus P1_n \\
+  C2 = E(key, IV) \oplus P2_0 || E(key, C2_0) \oplus P2_1 || ... || E(key, C1_{n-1}) \oplus P2_n \\
+  P1_0\oplus C1_0 \oplus C2_0 \\
+   = P1_0 \oplus E(key, IV) \oplus P1_0 \oplus E(key, IV) \oplus P2_0 = P2_0 \\
+  $$
+
+  * $E(key, C1_0)$ and $E(key, C2_0)$ cannot be cancelled, therefore only the first block can be revealed
+
+#### Task 6.3
+
+* In this case, the message only contains one block: 
+  $$
+  C1 = E(key, P1 \oplus IV1) \\
+  C2 = E(key, P2 \oplus IV2) \\
+  $$
+
+* According to the known information, the only difference between $IV1$ and $IV2$ is the last bit, therefore, we let
+  $$
+  P1^\prime = "Yes" \\
+  
+  P2 = P1^\prime \oplus 1 \\
+  
+  C2 = E(key, P1^\prime \oplus 1 \oplus IV2 ) \\
+   = E(key, P1^\prime \oplus IV1)
+  $$
+
+* We know that for 1-block aes, the outputs of same inputs are the same, therefore we check $C2 \oplus C1$, if the result is $0$, $P1$ is $Yes$, otherwise $P1$ is $No$ 
+
+--------------------
+
+### Task 7: Programming using the Crypto Library
+
+* 
+
+---------------------------------
 
 ## MD5 Collision Attack
 
+### Task 8: Generating Two Different Files with the Same MD5 Hash
 
+
+
+-----------------
+
+### Task 9: Understanding MD5’s Property
+
+
+
+-----------------
+
+### Task 10: Generating Two Executable Files with the Same MD5 Hash 
+
+
+
+-------------------
+
+### Task 11: Making the Two Programs Behave Differently
+
+
+
+-----------------
 
 ## RSA Public-Key Encryption and Signature
+
+### Task 12: Deriving the Private Key
+
+
+
+----------------
+
+### Task 13: Encrypting a Message
+
+
+
+------------------
+
+### Task 14: Decrypting a Message
+
+
+
+---------------
+
+### Task 15: Signing a Message
+
+
+
+------------------
+
+### Task 16: Verifying a Message
+
+
+
+-------------------
+
+### Task 17: Manually Verifying an X.509 Certificate
+
+
 
 
 
@@ -268,3 +407,22 @@
 * 
 
 ---------
+
+### Task 20: Measure the Entropy of Kernel
+
+
+
+--------------------
+
+### Task 21: Get Pseudo Random Numbers from `/dev/random`
+
+
+
+--------------------
+
+### Task 22: Get Random Numbers from `/dev/urandom `
+
+
+
+-------------------
+
