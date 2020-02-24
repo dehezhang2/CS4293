@@ -272,6 +272,8 @@
   P1 \oplus C1 \oplus C2 = P2_0 || P2_1 || ... || P2_n = P2
   $$
 
+*  Result: Order: Launch a missile!
+
 * Code: 
 
   ![Screen Shot 2020-02-22 at 6.45.55 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-02-22 at 6.45.55 PM.png)
@@ -757,39 +759,484 @@
 
 ### Task 12: Deriving the Private Key
 
+* Code:
 
+  ```c
+  #include <stdio.h>
+  #include <openssl/bn.h>
+  #define NBITS 256
+  void printBN(char *msg, BIGNUM * a)
+  {
+  	/* Use BN_bn2hex(a) for hex string
+  	* Use BN_bn2dec(a) for decimal string */
+  	char * number_str = BN_bn2hex(a);
+  	printf("%s %s\n", msg, number_str);
+  	OPENSSL_free(number_str);
+  }
+  
+  int main ()
+  {
+  	BN_CTX *ctx = BN_CTX_new();
+  	BIGNUM *p = BN_new();
+  	BIGNUM *q = BN_new();
+  	BIGNUM *one = BN_new();
+  	BIGNUM *phi_p = BN_new();
+  	BIGNUM *phi_q = BN_new();
+  	BIGNUM *phi_n = BN_new();
+  	BIGNUM *e = BN_new();
+  	BIGNUM *res = BN_new();
+  
+  	// Initialization
+  	BN_hex2bn(&p, "F7E75FDC469067FFDC4E847C51F452DF");
+  	BN_hex2bn(&q, "E85CED54AF57E53E092113E62F436F4F");
+  	BN_hex2bn(&one, "1");
+  	BN_hex2bn(&e, "0D88C3");
+  
+  	// Calculate phi
+  	BN_sub(phi_p, p, one);
+  	BN_sub(phi_q, q, one);
+  	BN_mul(phi_n, phi_p, phi_q, ctx);
+  
+  	// res = e^{-1} (mod phi_n)
+  	BN_mod_inverse(res, e, phi_n, ctx);
+  	printBN("e  = e^{-1} (mod phi_n) = ", res);
+  	return 0;
+  }
+  ```
+
+  ![1582552947407](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582552947407.png)
+
+* Result: $d \equiv e^{-1}(mod\ \phi(pq)) = $`(0X)3587A24598E5F2A21DB007D89D18CC50ABA5075BA19A33890FE7C28A9B496AEB` 
 
 ----------------
 
 ### Task 13: Encrypting a Message
 
+* Code: 
 
+  ```cpp
+  #include <stdio.h>
+  #include <openssl/bn.h>
+  #define NBITS 256
+  void printBN(char *msg, BIGNUM * a)
+  {
+  	/* Use BN_bn2hex(a) for hex string
+  	* Use BN_bn2dec(a) for decimal string */
+  	char * number_str = BN_bn2hex(a);
+  	printf("%s %s\n", msg, number_str);
+  	OPENSSL_free(number_str);
+  }
+  
+  int main ()
+  {
+  	BN_CTX *ctx = BN_CTX_new();
+  	BIGNUM *n = BN_new();
+  	BIGNUM *e = BN_new();
+  	BIGNUM *M = BN_new();
+  	BIGNUM *d = BN_new();
+  	BIGNUM *C = BN_new();
+  	BIGNUM *M_prime = BN_new();
+  
+  	// Initialization
+  	BN_hex2bn(&n, "DCBFFE3E51F62E09CE7032E2677A78946A849DC4CDDE3A4D0CB81629242FB1A5");
+  	BN_hex2bn(&e, "010001");
+  	BN_hex2bn(&M, "4120746f702073656372657421");
+  	BN_hex2bn(&d, "74D806F9F3A62BAE331FFE3F0A68AFE35B3D2E4794148AACBC26AA381CD7D30D");
+  
+  	// C = M^e mod n
+  	BN_mod_exp(C, M, e, n, ctx);
+  	printBN("Encrypted M^e mod n = ", C);
+  	BN_mod_exp(M_prime, C, d, n, ctx);
+  	printBN("Decrypted C^d mod n = ", M_prime);
+  	return 0;
+  }
+  
+  ```
+
+  ![1582553897478](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582553897478.png)
+
+* Result: $C = M^e\ mod\ n =$
+
+  `(0x)6FB078DA550B2650832661E14F4F8D2CFAEF475A0DF3A75CACDC5DE5CFC5FADC`
 
 ------------------
 
 ### Task 14: Decrypting a Message
 
+* Code
 
+  ```cpp
+  #include <stdio.h>
+  #include <openssl/bn.h>
+  #define NBITS 256
+  void printBN(char *msg, BIGNUM * a)
+  {
+  	/* Use BN_bn2hex(a) for hex string
+  	* Use BN_bn2dec(a) for decimal string */
+  	char * number_str = BN_bn2hex(a);
+  	printf("%s %s\n", msg, number_str);
+  	OPENSSL_free(number_str);
+  }
+  
+  int main ()
+  {
+  	BN_CTX *ctx = BN_CTX_new();
+  	BIGNUM *n = BN_new();
+  	BIGNUM *d = BN_new();
+  	BIGNUM *C = BN_new();
+  	BIGNUM *M_prime = BN_new();
+  
+  	// Initialization
+  	BN_hex2bn(&n, "DCBFFE3E51F62E09CE7032E2677A78946A849DC4CDDE3A4D0CB81629242FB1A5");
+  	BN_hex2bn(&d, "74D806F9F3A62BAE331FFE3F0A68AFE35B3D2E4794148AACBC26AA381CD7D30D");
+  	BN_hex2bn(&C, "8C0F971DF2F3672B28811407E2DABBE1DA0FEBBBDFC7DCB67396567EA1E2493F");
+  
+  	// M = C^d mod n
+  	BN_mod_exp(M_prime, C, d, n, ctx);
+  	printBN("Decrypted C^d mod n = ", M_prime);
+  	return 0;
+  }
+  
+  ```
+
+  ![1582554516686](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582554516686.png)
+
+* Result: $M^\prime = C^d\ mod\ n =$
+
+  `Password is dees`
 
 ---------------
 
 ### Task 15: Signing a Message
 
+* Find out the hex value of message: 
 
+  ![1582555772838](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582555772838.png)
+
+  ![1582555994604](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582555994604.png)
+
+* Code
+
+  ```cpp
+  #include <stdio.h>
+  #include <openssl/bn.h>
+  #define NBITS 256
+  void printBN(char *msg, BIGNUM * a)
+  {
+  	/* Use BN_bn2hex(a) for hex string
+  	* Use BN_bn2dec(a) for decimal string */
+  	char * number_str = BN_bn2hex(a);
+  	printf("%s %s\n", msg, number_str);
+  	OPENSSL_free(number_str);
+  }
+  
+  int main ()
+  {
+  	BN_CTX *ctx = BN_CTX_new();
+  	BIGNUM *n = BN_new();
+  	BIGNUM *d = BN_new();
+  	BIGNUM *M = BN_new();
+  	BIGNUM *S = BN_new();
+  
+  	// Initialization
+  	BN_hex2bn(&n, "DCBFFE3E51F62E09CE7032E2677A78946A849DC4CDDE3A4D0CB81629242FB1A5");
+  	BN_hex2bn(&d, "74D806F9F3A62BAE331FFE3F0A68AFE35B3D2E4794148AACBC26AA381CD7D30D");
+  	BN_hex2bn(&M, "49206f776520796f752024323030302e");
+      // BN_hex2bn(&M, "49206f776520796f752024313030302e");
+  
+  	// S = M^d mod n
+  	BN_mod_exp(S, M, d, n, ctx);
+  	printBN("Signed M^d mod n = ", S);
+  	return 0;
+  }
+  
+  ```
+
+  * Message: “I owe you $2000.”
+
+  ![1582555894803](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582555894803.png)
+
+  * Message: “I owe you $1000.”
+
+  ![1582556073773](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582556073773.png)
+
+* Result: 
+
+  * For “I owe you $2000.”, the signed value is `(0x)55A4E7F17F04CCFE2766E1EB32ADDBA890BBE92A6FBE2D785ED6E73CCB35E4CB`
+  * For “I owe you $1000.”, the signed value is `(0x)2E53601F1C0FADAFC8C29C8C60C9A888F77A7820CEAF09C81762270805E1779E`
+  * Observation: Change the message by a little bits will result in a slightly change in signed message
 
 ------------------
 
 ### Task 16: Verifying a Message
 
+* Code
 
+  ```cpp
+  #include <stdio.h>
+  #include <openssl/bn.h>
+  #define NBITS 256
+  void printBN(char *msg, BIGNUM * a)
+  {
+  	/* Use BN_bn2hex(a) for hex string
+  	* Use BN_bn2dec(a) for decimal string */
+  	char * number_str = BN_bn2hex(a);
+  	printf("%s %s\n", msg, number_str);
+  	OPENSSL_free(number_str);
+  }
+  
+  int main ()
+  {
+  	BN_CTX *ctx = BN_CTX_new();
+  	BIGNUM *n = BN_new();
+  	BIGNUM *e = BN_new();
+  	BIGNUM *S = BN_new();
+  	BIGNUM *d = BN_new();
+  	BIGNUM *M = BN_new();
+  
+  	// Initialization
+  	BN_hex2bn(&n, "AE1CD4DC432798D933779FBD46C6E1247F0CF1233595113AA51B450F18116115");
+  	BN_hex2bn(&e, "010001");
+  	BN_hex2bn(&S, "643D6F34902D9C7EC90CB0B2BCA36C47FA37165C0005CAB026C0542CBDB6802F");
+  	// BN_hex2bn(&S, "643D6F34902D9C7EC90CB0B2BCA36C47FA37165C0005CAB026C0542CBDB6803F");
+  
+  	// M = S^e mod n
+  	BN_mod_exp(M, S, e, n, ctx);
+  	printBN("Verified S^e mod n = ", M);
+  	return 0;
+  }
+  
+  ```
+
+  ![1582556959641](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582556959641.png)
+
+* Result: The signature is indeed Alice’s. 
+
+* Observation of change `2F` to `3F`
+
+  ![1582557080625](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582557080625.png)
+
+  * The result of verification is slightly different, as shown above
 
 -------------------
 
 ### Task 17: Manually Verifying an X.509 Certificate
 
+#### Step 1: Download a certificate from a real web server
+
+* `c0.pem` for `s:/C=US/ST=New York/L=New York/jurisdictionC=US/jurisdictionST=Delaware/O=JPMorgan Chase and Co./businessCategory=Private Organization/serialNumber=691011/CN=www.chase.com`
+
+  ```
+  -----BEGIN CERTIFICATE-----
+  MIIHJzCCBg+gAwIBAgIRAP17UFHwC61uAAAAAFTPlwgwDQYJKoZIhvcNAQELBQAw
+  gboxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1FbnRydXN0LCBJbmMuMSgwJgYDVQQL
+  Ex9TZWUgd3d3LmVudHJ1c3QubmV0L2xlZ2FsLXRlcm1zMTkwNwYDVQQLEzAoYykg
+  MjAxNCBFbnRydXN0LCBJbmMuIC0gZm9yIGF1dGhvcml6ZWQgdXNlIG9ubHkxLjAs
+  BgNVBAMTJUVudHJ1c3QgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgLSBMMU0wHhcN
+  MTkwMzIxMTIxNzM1WhcNMjAwMzIxMTI0NzM1WjCBzDELMAkGA1UEBhMCVVMxETAP
+  BgNVBAgTCE5ldyBZb3JrMREwDwYDVQQHEwhOZXcgWW9yazETMBEGCysGAQQBgjc8
+  AgEDEwJVUzEZMBcGCysGAQQBgjc8AgECEwhEZWxhd2FyZTEfMB0GA1UEChMWSlBN
+  b3JnYW4gQ2hhc2UgYW5kIENvLjEdMBsGA1UEDxMUUHJpdmF0ZSBPcmdhbml6YXRp
+  b24xDzANBgNVBAUTBjY5MTAxMTEWMBQGA1UEAxMNd3d3LmNoYXNlLmNvbTCCASIw
+  DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALwRpXHSWD/7DRjYIUdrxFCPC9Cu
+  JRAvx2m7g1YeAWuTcLkwKnCr3h3g4sUk7K6umsYI9TpZ/6nnAvSR7dM214fZfvRO
+  2Ees85bWb6Kb91mTce7PLd+c15/gqloiOwPvLY0VmQhb0KEkrEdLB7M9VoFFlkjE
+  OlRUqwW584oOcXLLwBiq+4GVG2rfW/DQYEzXrMCXOIH0/Bg0Z0LWVxI3VZhZUb/h
+  27kUYuvJ1LhfUnrRVzlYFTJchRTgIu7/Pepgo/VR4zUKhFHBd6lzspUefuvm5+cg
+  311d1sSi2i19knqZH2FRpKgX+HIRcXhl4u38P9RrWMLfiHhAKxQ2QTxFlkUCAwEA
+  AaOCAxIwggMOMCMGA1UdEQQcMBqCDXd3dy5jaGFzZS5jb22CCWNoYXNlLmNvbTCC
+  AYAGCisGAQQB1nkCBAIEggFwBIIBbAFqAHcAh3W/51l8+IxDmV+9827/Vo1HVjb/
+  SrVgwbTq/16ggw8AAAFpoErmiQAABAMASDBGAiEA92Nzh26VQrAroBgqKyxlVE5z
+  g1BiUK6Agv2kBOzVFWwCIQC/w/4Qor5bhmtbzF4+lqATga5pSMvJd6xtFZjk8T+3
+  lAB2AFWB1MIWkDYBSuoLm1c8U/DA5Dh4cCUIFy+jqh0HE9MMAAABaaBK5qEAAAQD
+  AEcwRQIgSBx1k77ZaNbSY7I7gHHrnVXDrhH8r+YJx5SxDwVKIMUCIQCC3QbN8txE
+  uYfgtDY1TEBNWJx/I4Sl1Fu1LW8JBwF8kAB3AKS5CZC0GFgUh7sTosxncAo8NZgE
+  +RvfuON3zQ7IDdwQAAABaaBK5sUAAAQDAEgwRgIhAOPadj3LVWHyfrf0eyEQTOmW
+  vj09Kv6yP6mPpvAMjociAiEA4G3dadfWQuDK33oAtgAAqr2aJvdu9AnggYzbK3R9
+  BH0wDgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcD
+  AjBoBggrBgEFBQcBAQRcMFowIwYIKwYBBQUHMAGGF2h0dHA6Ly9vY3NwLmVudHJ1
+  c3QubmV0MDMGCCsGAQUFBzAChidodHRwOi8vYWlhLmVudHJ1c3QubmV0L2wxbS1j
+  aGFpbjI1Ni5jZXIwMwYDVR0fBCwwKjAooCagJIYiaHR0cDovL2NybC5lbnRydXN0
+  Lm5ldC9sZXZlbDFtLmNybDBKBgNVHSAEQzBBMDYGCmCGSAGG+mwKAQIwKDAmBggr
+  BgEFBQcCARYaaHR0cDovL3d3dy5lbnRydXN0Lm5ldC9ycGEwBwYFZ4EMAQEwHwYD
+  VR0jBBgwFoAUw/fQtSowra8NkSFwOVTdvIlwxzowHQYDVR0OBBYEFI7m5CNIAKzi
+  e5uM+AzD7Mw4IlqpMAkGA1UdEwQCMAAwDQYJKoZIhvcNAQELBQADggEBAGRWzWCX
+  nrDVF0kBt/uxdvRCpPWY7FpyU/eoDr3Gr9UI2SdqOhaUOmOjXIPWqpFOJSqUo/qf
+  qTSDWshlvDBLgpheQ86jiqqwBCpHCBbeE82rSzWnfqWNsVUv1L3VMGtcYEN1uupl
+  qUbLK+Bz3NnOa22BdLsk9qfP3OQioiNVFkE3h9glEAtKbDzF2pAXnWGjdVDtjeON
+  HtJzQ1W6wz9LA84zJQYL3CUdDho09blaYELR9Dacprw7yEv/0D21rpNqevQFXVaC
+  h97ob82ixMdXoFnl3fyGpKBcsR4r99GB7VwnXw+EvrIie6XKNX36kTOip4b6hh0E
+  FgSm4nQgdn2fCM4=
+  -----END CERTIFICATE-----
+  ```
+
+* `c1.pem` for `s:/C=US/O=Entrust, Inc./OU=See www.entrust.net/legal-terms/OU=(c) 2014 Entrust, Inc. - for authorized use only/CN=Entrust Certification Authority - L1M`
+
+  ```
+  -----BEGIN CERTIFICATE-----
+  MIIFLTCCBBWgAwIBAgIMYaHn0gAAAABR02amMA0GCSqGSIb3DQEBCwUAMIG+MQsw
+  CQYDVQQGEwJVUzEWMBQGA1UEChMNRW50cnVzdCwgSW5jLjEoMCYGA1UECxMfU2Vl
+  IHd3dy5lbnRydXN0Lm5ldC9sZWdhbC10ZXJtczE5MDcGA1UECxMwKGMpIDIwMDkg
+  RW50cnVzdCwgSW5jLiAtIGZvciBhdXRob3JpemVkIHVzZSBvbmx5MTIwMAYDVQQD
+  EylFbnRydXN0IFJvb3QgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgLSBHMjAeFw0x
+  NDEyMTUxNTI1MDNaFw0zMDEwMTUxNTU1MDNaMIG6MQswCQYDVQQGEwJVUzEWMBQG
+  A1UEChMNRW50cnVzdCwgSW5jLjEoMCYGA1UECxMfU2VlIHd3dy5lbnRydXN0Lm5l
+  dC9sZWdhbC10ZXJtczE5MDcGA1UECxMwKGMpIDIwMTQgRW50cnVzdCwgSW5jLiAt
+  IGZvciBhdXRob3JpemVkIHVzZSBvbmx5MS4wLAYDVQQDEyVFbnRydXN0IENlcnRp
+  ZmljYXRpb24gQXV0aG9yaXR5IC0gTDFNMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+  MIIBCgKCAQEA0IHBOSPCsdHs91fdVSQ2kSAiSPf8ylIKsKs/M7WwhAf23056sPuY
+  Ij0BrFb7cW2y7rmgD1J3q5iTvjOK64dex6qwymmPQwhqPyK/MzlG1ZTy4kwFItln
+  gJHxBEoOm3yiydJs/TwJhL39axSagR3nioPvYRZ1R5gTOw2QFpi/iuInMlOZmcP7
+  lhw192LtjL1JcdJDQ6Gh4yEqI3CodT2ybEYGYW8YZ+QpfrI8wcVfCR5uRE7sIZlY
+  FUj0VUgqtzS0BeN8SYwAWN46lsw53GEzVc4qLj/RmWLoquY0djGqr3kplnjLgRSv
+  adr7BLlZg0SqCU+01CwBnZuUMWstoc/B5QIDAQABo4IBKzCCAScwDgYDVR0PAQH/
+  BAQDAgEGMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATASBgNVHRMBAf8E
+  CDAGAQH/AgEAMDMGCCsGAQUFBwEBBCcwJTAjBggrBgEFBQcwAYYXaHR0cDovL29j
+  c3AuZW50cnVzdC5uZXQwMAYDVR0fBCkwJzAloCOgIYYfaHR0cDovL2NybC5lbnRy
+  dXN0Lm5ldC9nMmNhLmNybDA7BgNVHSAENDAyMDAGBFUdIAAwKDAmBggrBgEFBQcC
+  ARYaaHR0cDovL3d3dy5lbnRydXN0Lm5ldC9ycGEwHQYDVR0OBBYEFMP30LUqMK2v
+  DZEhcDlU3byJcMc6MB8GA1UdIwQYMBaAFGpyJnrQHu995ztpUdRsjZ+QEmarMA0G
+  CSqGSIb3DQEBCwUAA4IBAQC0h8eEIhopwKR47PVPG7SEl2937tTPWa+oQ5YvHVje
+  pvMVWy7ZQ5xMQrkXFxGttLFBx2YMIoYFp7Qi+8VoaIqIMthx1hGOjlJ+Qgld2dnA
+  DizvRGsf2yS89byxqsGK5Wbb0CTz34mmi/5e0FC6m3UAyQhKS3Q/WFOv9rihbISY
+  Jnz8/DVRZZgeO2x28JkPxLkJ1YXYJKd/KsLak0tkuHB8VCnTglTVz6WUwzOeTTRn
+  4Dh2ZgCN0C/GqwmqcvrOLzWJ/MDtBgO334wlV/H77yiI2YIowAQPlIFpI+CRKMVe
+  1QzX1CA778n4wI+nQc1XRG5sZ2L+hN/nYNjvv9QiHg3n
+  -----END CERTIFICATE-----
+  
+  ```
+
+* `c2.pem` for `s:/C=US/O=Entrust, Inc./OU=See www.entrust.net/legal-terms/OU=(c) 2009 Entrust, Inc. - for authorized use only/CN=Entrust Root Certification Authority - G2`
+
+  ```
+  -----BEGIN CERTIFICATE-----
+  MIIEPjCCAyagAwIBAgIESlOMKDANBgkqhkiG9w0BAQsFADCBvjELMAkGA1UEBhMC
+  VVMxFjAUBgNVBAoTDUVudHJ1c3QsIEluYy4xKDAmBgNVBAsTH1NlZSB3d3cuZW50
+  cnVzdC5uZXQvbGVnYWwtdGVybXMxOTA3BgNVBAsTMChjKSAyMDA5IEVudHJ1c3Qs
+  IEluYy4gLSBmb3IgYXV0aG9yaXplZCB1c2Ugb25seTEyMDAGA1UEAxMpRW50cnVz
+  dCBSb290IENlcnRpZmljYXRpb24gQXV0aG9yaXR5IC0gRzIwHhcNMDkwNzA3MTcy
+  NTU0WhcNMzAxMjA3MTc1NTU0WjCBvjELMAkGA1UEBhMCVVMxFjAUBgNVBAoTDUVu
+  dHJ1c3QsIEluYy4xKDAmBgNVBAsTH1NlZSB3d3cuZW50cnVzdC5uZXQvbGVnYWwt
+  dGVybXMxOTA3BgNVBAsTMChjKSAyMDA5IEVudHJ1c3QsIEluYy4gLSBmb3IgYXV0
+  aG9yaXplZCB1c2Ugb25seTEyMDAGA1UEAxMpRW50cnVzdCBSb290IENlcnRpZmlj
+  YXRpb24gQXV0aG9yaXR5IC0gRzIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+  AoIBAQC6hLZy254Ma+KZ6TABp3bqMriVQRrJ2mFOWHLP/vaCeb9zYQYKpSfYs1/T
+  RU4cctZOMvJyig/3gxnQaoCAAEUesMfnmr8SVycco2gvCoe9amsOXmXzHHfV1IWN
+  cCG0szLni6LVhjkCsbjSR87kyUnEO6fe+1R9V77w6G7CebI6C1XiUJgWMhNcL3hW
+  wcKUs/Ja5CeanyTXxuzQmyWC48zCxEXFjJd6BmsqEZ+pCm5IO2/b1BEZQvePB7/1
+  U1+cPvQXLOZprE4yTGJ36rfo5bs0vBmLrpxR57d+tVOxMyLlbc9wPBr64ptntoP0
+  jaWvYkxN4FisZDQSA/i2jZRjJKRxAgMBAAGjQjBAMA4GA1UdDwEB/wQEAwIBBjAP
+  BgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRqciZ60B7vfec7aVHUbI2fkBJmqzAN
+  BgkqhkiG9w0BAQsFAAOCAQEAeZ8dlsa2eT8ijYfThwMEYGprmi5ZiXMRrEPR9RP/
+  jTkrwPK9T3CMqS/qF8QLVJ7UG5aYMzyorWKiAHarWWluBh1+xLlEjZivEtRh2woZ
+  Rkfz6/djwUAFQKXSt/S1mja/qYh2iARVBCuch38aNzx+LaUa2NSJXsq9rD1s2G2v
+  1fN2D807iDginWyTmsQ9v4IbZT+mD12q/OWyFcq1rca8PdCE6OoGcrBNOTJ4vz4R
+  nAuknZoh8/CbCzB428Hch0P+vGOaysXCHMnHjf87ElgI5rY97HosTvuDls4MPGmH
+  VHOkc8KT/1EQrBVUAdj8BbGJoX90g5pJ19xOe4pIb4tF9g==
+  -----END CERTIFICATE-----
+  ```
+
+#### Step 2: Extract the public key $(e,n)$ from the issuer’s certificate
+
+* Modulus ($n$): 
+
+  ![1582559793243](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582559793243.png)
+
+  ```
+  n:
+  D081C13923C2B1D1ECF757DD55243691202248F7FCCA520AB0AB3F33B5B08407F6DF4E7AB0FB98223D01AC56FB716DB2EEB9A00F5277AB9893BE338AEB875EC7AAB0CA698F43086A3F22BF333946D594F2E24C0522D9678091F1044A0E9B7CA2C9D26CFD3C0984BDFD6B149A811DE78A83EF6116754798133B0D901698BF8AE22732539999C3FB961C35F762ED8CBD4971D24343A1A1E3212A2370A8753DB26C4606616F1867E4297EB23CC1C55F091E6E444EEC2199581548F455482AB734B405E37C498C0058DE3A96CC39DC613355CE2A2E3FD19962E8AAE6347631AAAF79299678CB8114AF69DAFB04B9598344AA094FB4D42C019D9B94316B2DA1CFC1E5
+  ```
+
+* Exponent ($e$):
+
+  ![1582560151199](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582560151199.png)
+
+  ```
+  e: 
+  10001
+  ```
+
+#### Step 3: Extract the signature from the server’s certificate
+
+* CA’s Signature ($S$):  
+
+  ![1582560259288](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582560259288.png)
+
+  ![1582560403610](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582560403610.png)
+
+  ```
+  S:
+  6456cd60979eb0d5174901b7fbb176f442a4f598ec5a7253f7a80ebdc6afd508d9276a3a16943a63a35c83d6aa914e252a94a3fa9fa934835ac865bc304b82985e43cea38aaab0042a470816de13cdab4b35a77ea58db1552fd4bdd5306b5c604375baea65a946cb2be073dcd9ce6b6d8174bb24f6a7cfdce422a2235516413787d825100b4a6c3cc5da90179d61a37550ed8de38d1ed2734355bac33f4b03ce3325060bdc251d0e1a34f5b95a6042d1f4369ca6bc3bc84bffd03db5ae936a7af4055d568287dee86fcda2c4c757a059e5ddfc86a4a05cb11e2bf7d181ed5c275f0f84beb2227ba5ca357dfa9133a2a786fa861d041604a6e27420767d9f08ce
+  ```
+
+#### Step 4: Extract the body of the server’s certificate
+
+* The body of the CA’s Signature($M$): 
+
+  ![1582563531210](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582563531210.png)
 
 
 
+  ```
+  h(M):
+  574d7ae241c4eae18a75760348c78ba7fefd4b46c2b46cdc568e1c2f7d151eb9
+  ```
+
+#### Step 5: Verify the signature
+
+* Known
+
+  ```
+  n:
+  (0x)D081C13923C2B1D1ECF757DD55243691202248F7FCCA520AB0AB3F33B5B08407F6DF4E7AB0FB98223D01AC56FB716DB2EEB9A00F5277AB9893BE338AEB875EC7AAB0CA698F43086A3F22BF333946D594F2E24C0522D9678091F1044A0E9B7CA2C9D26CFD3C0984BDFD6B149A811DE78A83EF6116754798133B0D901698BF8AE22732539999C3FB961C35F762ED8CBD4971D24343A1A1E3212A2370A8753DB26C4606616F1867E4297EB23CC1C55F091E6E444EEC2199581548F455482AB734B405E37C498C0058DE3A96CC39DC613355CE2A2E3FD19962E8AAE6347631AAAF79299678CB8114AF69DAFB04B9598344AA094FB4D42C019D9B94316B2DA1CFC1E5
+  
+  e:
+  (0x)10001
+  
+  S:
+  6456cd60979eb0d5174901b7fbb176f442a4f598ec5a7253f7a80ebdc6afd508d9276a3a16943a63a35c83d6aa914e252a94a3fa9fa934835ac865bc304b82985e43cea38aaab0042a470816de13cdab4b35a77ea58db1552fd4bdd5306b5c604375baea65a946cb2be073dcd9ce6b6d8174bb24f6a7cfdce422a2235516413787d825100b4a6c3cc5da90179d61a37550ed8de38d1ed2734355bac33f4b03ce3325060bdc251d0e1a34f5b95a6042d1f4369ca6bc3bc84bffd03db5ae936a7af4055d568287dee86fcda2c4c757a059e5ddfc86a4a05cb11e2bf7d181ed5c275f0f84beb2227ba5ca357dfa9133a2a786fa861d041604a6e27420767d9f08ce
+  
+  h(M):
+  574d7ae241c4eae18a75760348c78ba7fefd4b46c2b46cdc568e1c2f7d151eb9
+  ```
+
+* Code
+
+  ```cpp
+  #include <stdio.h>
+  #include <openssl/bn.h>
+  #define NBITS 256
+  void printBN(char *msg, BIGNUM * a)
+  {
+  	/* Use BN_bn2hex(a) for hex string
+  	* Use BN_bn2dec(a) for decimal string */
+  	char * number_str = BN_bn2hex(a);
+  	printf("%s %s\n", msg, number_str);
+  	OPENSSL_free(number_str);
+  }
+  
+  int main ()
+  {
+  	BN_CTX *ctx = BN_CTX_new();
+  	BIGNUM *n = BN_new();
+  	BIGNUM *e = BN_new();
+  	BIGNUM *S = BN_new();
+  	BIGNUM *d = BN_new();
+  	BIGNUM *M = BN_new();
+  
+  	// Initialization
+  	BN_hex2bn(&n, "D081C13923C2B1D1ECF757DD55243691202248F7FCCA520AB0AB3F33B5B08407F6DF4E7AB0FB98223D01AC56FB716DB2EEB9A00F5277AB9893BE338AEB875EC7AAB0CA698F43086A3F22BF333946D594F2E24C0522D9678091F1044A0E9B7CA2C9D26CFD3C0984BDFD6B149A811DE78A83EF6116754798133B0D901698BF8AE22732539999C3FB961C35F762ED8CBD4971D24343A1A1E3212A2370A8753DB26C4606616F1867E4297EB23CC1C55F091E6E444EEC2199581548F455482AB734B405E37C498C0058DE3A96CC39DC613355CE2A2E3FD19962E8AAE6347631AAAF79299678CB8114AF69DAFB04B9598344AA094FB4D42C019D9B94316B2DA1CFC1E5");
+  	BN_hex2bn(&e, "010001");
+  	BN_hex2bn(&S, "6456cd60979eb0d5174901b7fbb176f442a4f598ec5a7253f7a80ebdc6afd508d9276a3a16943a63a35c83d6aa914e252a94a3fa9fa934835ac865bc304b82985e43cea38aaab0042a470816de13cdab4b35a77ea58db1552fd4bdd5306b5c604375baea65a946cb2be073dcd9ce6b6d8174bb24f6a7cfdce422a2235516413787d825100b4a6c3cc5da90179d61a37550ed8de38d1ed2734355bac33f4b03ce3325060bdc251d0e1a34f5b95a6042d1f4369ca6bc3bc84bffd03db5ae936a7af4055d568287dee86fcda2c4c757a059e5ddfc86a4a05cb11e2bf7d181ed5c275f0f84beb2227ba5ca357dfa9133a2a786fa861d041604a6e27420767d9f08ce");
+  
+  	// M = S^e mod n
+  	BN_mod_exp(M, S, e, n, ctx);
+  	printBN("", M);
+  	return 0;
+  }
+  ```
+
+* 
 
 ## Pseudo Random Number Generation
 
