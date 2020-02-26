@@ -1236,9 +1236,9 @@
   }
   ```
 
-  ![1582709493962](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582709493962.png)
+* After running the algorithm, we can find that the last several bytes of output is the same as the hash of the certificate body, which means **the certificate is valid**.  
 
-* Result: After running the algorithm, we can find that the last several bytes of output is the same as the hash of the certificate body, which means **the certificate is valid**.  
+  ![1582709493962](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582709493962.png)
 
 ## Pseudo Random Number Generation
 
@@ -1246,9 +1246,9 @@
 
 * Observation
 
-  * With `srand`: Seems right.
+  * With `srand`: Seems right, but there will be some duplicate random numbers if the program is executed to fast. 
 
-    ![Screen Shot 2020-01-19 at 4.01.19 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-19 at 4.01.19 PM.png)
+    ![1582607865308](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582607865308.png)
 
   * Without `srand`: All the “random” numbers are the same.
 
@@ -1256,8 +1256,8 @@
 
 * Explanation: 
 
-  * `srand` will pass a seed to the `c++` random number generator. And the `rand` function will generate a pseudo random number based on the given seed. 
-  * `time` function is used to use the current time as the seed, since the number genrating function is highly non-linear, the result will be partialy “random”. 
+  * `srand` will pass a seed to the `c++` random number generator. And the `rand` function will generate a pseudo random number based on the given seed by using a hash function. 
+  * `time` function is used to use the current time as the seed, since the number generating function is highly non-linear, the result will be partially “random”. 
 
 ---------
 
@@ -1267,25 +1267,224 @@
 
   ![Screen Shot 2020-01-19 at 6.20.14 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-19 at 6.20.14 PM.png)
 
-* 
+* Code (similar to task7):
+
+  ```cpp
+  #include <openssl/evp.h>
+  #include <string.h>
+  #include <stdio.h>
+  #include <string>
+  #include <sstream>
+  using namespace std;
+  
+  #define llong long long 
+  #define ENCRYPT 1
+  #define DECRYPT 0
+  #define TEXTLEN 16
+  #define KEYSIZE 16
+  
+  unsigned char* do_crypt( unsigned char* intext, unsigned char* key, 
+                           unsigned char* iv, int do_encrypt
+  ){
+     unsigned char* ans = (unsigned char*) malloc(1024) ;
+     memset(ans, 0, 1024);
+     unsigned char outbuf[1024];
+     int outlen, tmplen;
+  
+     EVP_CIPHER_CTX ctx;
+  
+     /* Don't set key or IV right away; we want to check lengths */
+     EVP_CIPHER_CTX_init(&ctx);
+     EVP_CipherInit_ex(&ctx, EVP_aes_128_cbc(), NULL, NULL, NULL,
+             do_encrypt);
+     OPENSSL_assert(EVP_CIPHER_CTX_key_length(&ctx) == 16);
+     OPENSSL_assert(EVP_CIPHER_CTX_iv_length(&ctx) == 16);
+     /* Now we can set key and IV */
+     EVP_CipherInit_ex(&ctx, NULL, NULL, key, iv, do_encrypt);
+  
+    if(!EVP_EncryptUpdate(&ctx, outbuf, &outlen, intext, TEXTLEN)){
+      /* Error */
+      return 0;
+    }
+  
+    if(!EVP_EncryptFinal_ex(&ctx, outbuf + outlen, &tmplen)){
+      /* Error */
+      return 0;
+    }
+    outlen += tmplen;
+    EVP_CIPHER_CTX_cleanup(&ctx);
+    memcpy(ans, outbuf, outlen);
+    return ans;
+  }
+  
+  
+  
+  int hex_to_int(char c){
+    if(c<='9'&&c>='0'){
+      return c-'0' + 0;
+    } else {
+      return c-'a' + 10;
+    }
+  }
+  
+  int hex_to_ascii(char c, char d){
+    int high = hex_to_int(c) * 16;
+    int low = hex_to_int(d);
+    return high+low;
+  }
+  
+  int main(){
+  
+    // Convert hex cipher text into string
+    unsigned char plaintext[TEXTLEN];
+    const char* tmp = "255044462d312e350a25d0d4c5d80a34";
+    int length = strlen(tmp);
+    char buf = 0;
+    for(int i = 0; i < length; i++){
+      if(i % 2 != 0){
+        plaintext[i/2] = hex_to_ascii(buf, tmp[i]);
+      }else{
+        buf = tmp[i];
+      }
+    }
+  
+    unsigned char ciphertext[TEXTLEN];
+    const char* tmp1 = "d06bf9d0dab8e8ef880660d2af65aa82";
+    length = strlen(tmp1);
+    buf = 0;
+    for(int i = 0; i < length; i++){
+      if(i % 2 != 0){
+        ciphertext[i/2] = hex_to_ascii(buf, tmp1[i]);
+      }else{
+        buf = tmp1[i];
+      }
+    }
+  
+    unsigned char iv[16];
+    const char* tmp2 = "09080706050403020100A2B2C2D2E2F2";
+    length = strlen(tmp2);
+    buf = 0;
+    for(int i = 0; i < length; i++){ 
+      if(i % 2 != 0){
+        iv[i/2] = hex_to_ascii(buf, tmp2[i]);
+      }else{
+        buf = tmp2[i];
+      }
+    }
+  
+    llong start = 1524013689L, end = 1524020889L;
+  
+    for(llong i = start; i <= end; i++){
+      srand(i);
+  
+      unsigned char key[17];
+      char key2[17];
+      for (int j = 0; j< KEYSIZE; j++){
+         key2[j] = key[j] = rand()%256;
+      }
+      key2[16] = key[16] = 0;
+      unsigned char* ans = do_crypt(ciphertext, key, iv, DECRYPT);
+      if(ans){
+        int same = 1;
+        char check[16];
+        for(int j=0;j<TEXTLEN;j++){
+          check[j] = ans[j];
+          if(ans[j] != plaintext[j] ){
+            same = 0;
+            break;
+          } else {
+            // printf("Same %d", j);
+          }
+        }
+        if(same){
+          printf("%s", key2);
+        }
+      } 
+          
+    }
+  
+    return 0;
+  }
+  
+  ```
+
+  ![1582611033077](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582611033077.png)
+
+* Result of the key: 
+
+  ```
+  95FA2030E73ED3F8DA761B4EB805DFD7
+  ```
+
+* Test: 
+
+  ![1582611942808](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582611942808.png)
+
+  ![1582611852151](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582611852151.png)
 
 ---------
 
 ### Task 20: Measure the Entropy of Kernel
 
+* Observation: 
 
+  ![1582614224650](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582614224650.png)
+
+  * Click mouse or type some things increase the entropy only a little
+  * Move mouse will increase the entropy faster
+  * Read large file, visit website, or watch a video on Youtube will increase the entropy significantly. 
 
 --------------------
 
 ### Task 21: Get Pseudo Random Numbers from `/dev/random`
 
+* Observation: 
 
+  ![1582615006542](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582615006542.png)
+
+  * If we do not move mouse or type anything, the entropy is increased slowly to $64$ and drop to a small number
+  * If we randomly move the mouse, the entropy will increased fast and decrease fast, and start to oscillate
+
+* Explanation: 
+
+  * `cat` and `hexdump` commands will read and write the random numbers, which may increase the `blkdev_randomness`
+  * If we do not do any operation, the speed of producing entropy by `cat` and `hexdump` command is slow. The value is not decreased because `/dev/random` is **blocked**. When the value reaches $64$, it will be read and printed, and the entropy is decreased to a small number closed to zero.
+  * If we do some operation, the speed of producing entropy is fast, therefore, the value of entropy starts to oscillate
 
 --------------------
 
 ### Task 22: Get Random Numbers from `/dev/urandom `
 
+* Outcome of `ent`
 
+  ![1582616354945](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582616354945.png)
+
+  * Entropy per byte is really close to the maximum value $8$, the mean value is close to the random mean value, and the number is nearly totally uncorrelated. 
+  * The quality of the random number is good
+
+* Code
+
+  ```cpp
+  #include <stdio.h>
+  #include <string.h>
+  #define LEN 32
+  int main(){
+  	unsigned char *key = (unsigned char *) malloc(sizeof(unsigned char)*LEN);
+  	FILE* random = fopen("/dev/urandom", "r");
+  	fread(key, sizeof(unsigned char)*LEN, 1, random);
+  	fclose(random);
+  	for(int i=0;i<LEN;i++){
+  		if(i!=0) printf(" ");
+  		printf("%02X", key[i]);
+  	}
+  	printf("\n");
+  	return 0;
+  }
+  ```
+
+* Result
+
+  ![1582617311572](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582617311572.png)
 
 -------------------
 
