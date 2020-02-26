@@ -1229,14 +1229,16 @@
   	BN_hex2bn(&e, "010001");
   	BN_hex2bn(&S, "6456cd60979eb0d5174901b7fbb176f442a4f598ec5a7253f7a80ebdc6afd508d9276a3a16943a63a35c83d6aa914e252a94a3fa9fa934835ac865bc304b82985e43cea38aaab0042a470816de13cdab4b35a77ea58db1552fd4bdd5306b5c604375baea65a946cb2be073dcd9ce6b6d8174bb24f6a7cfdce422a2235516413787d825100b4a6c3cc5da90179d61a37550ed8de38d1ed2734355bac33f4b03ce3325060bdc251d0e1a34f5b95a6042d1f4369ca6bc3bc84bffd03db5ae936a7af4055d568287dee86fcda2c4c757a059e5ddfc86a4a05cb11e2bf7d181ed5c275f0f84beb2227ba5ca357dfa9133a2a786fa861d041604a6e27420767d9f08ce");
   
-  	// M = S^e mod n
+  	// h(M) = S^e mod n
   	BN_mod_exp(M, S, e, n, ctx);
   	printBN("", M);
   	return 0;
   }
   ```
 
-* 
+  ![1582709493962](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582709493962.png)
+
+* Result: After running the algorithm, we can find that the last several bytes of output is the same as the hash of the certificate body, which means **the certificate is valid**.  
 
 ## Pseudo Random Number Generation
 
