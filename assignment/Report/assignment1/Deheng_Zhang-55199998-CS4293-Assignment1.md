@@ -308,6 +308,23 @@
 
 * We know that for 1-block aes, the outputs of same inputs are the same, therefore we check $C2 \oplus C1$, if the result is $0$, $P1$ is $Yes$, otherwise $P1$ is $No$ 
 
+* Code
+
+  ```python
+  def lxor(l1, l2):
+  	return [i1 ^ i2 for (i1, i2) in zip(l1, l2)]
+  
+  p2 = list(bytes('Yes', 'ascii')) + [13] * 13
+  iv1 = list(bytes.fromhex("31323334353637383930313233343536"))
+  iv2 = list(bytes.fromhex("31323334353637383930313233343537"))
+  with open("plain.txt", 'wb') as f:
+  	f.write(bytes(lxor(lxor(p2, iv1), iv2)))
+  ```
+
+* Result: We can find that the result of `c2` is the same as `c1`, which means that `p1` is **Yes**
+
+  ![1583072106854](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1583072106854.png)
+
 --------------------
 
 ### Task 7: Programming using the Crypto Library
@@ -1012,11 +1029,11 @@
 
 * Result: The signature is indeed Alice’s. 
 
-* Observation of change `2F` to `3F`
+* **Observation of changing `2F` to `3F`**
 
   ![1582557080625](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582557080625.png)
 
-  * The result of verification is slightly different, as shown above
+  * Verification failed, the result of verification is slightly different, as shown above. 
 
 -------------------
 
@@ -1442,14 +1459,18 @@
 
   ![1582615006542](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582615006542.png)
 
-  * If we do not move mouse or type anything, the entropy is increased slowly to $64$ and drop to a small number
-  * If we randomly move the mouse, the entropy will increased fast and decrease fast, and start to oscillate
+  * If we **do not move mouse** or type anything, the entropy is increased slowly to $64$ and drop to a small number
+  * If we **randomly move the mouse**, the entropy will increased fast and decrease fast, and start to oscillate
 
 * Explanation: 
 
   * `cat` and `hexdump` commands will read and write the random numbers, which may increase the `blkdev_randomness`
-  * If we do not do any operation, the speed of producing entropy by `cat` and `hexdump` command is slow. The value is not decreased because `/dev/random` is **blocked**. When the value reaches $64$, it will be read and printed, and the entropy is decreased to a small number closed to zero.
-  * If we do some operation, the speed of producing entropy is fast, therefore, the value of entropy starts to oscillate
+  * If we **do not do any operation**, the speed of producing entropy by `cat` and `hexdump` command is slow. The value is not decreased because `/dev/random` is **blocked**. When the value reaches $64$, it will be read and printed, and the entropy is decreased to a small number closed to zero.
+  * If we **do some operation**, the speed of producing entropy is fast, therefore, the value of entropy starts to oscillate.
+
+* Launch DOS attack
+
+  * We can make a lot of authenticated connection with the server, because authenticated connection needs random number, it will decrease the value of entropy and block the `/dev/random`. 
 
 --------------------
 
