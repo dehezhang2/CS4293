@@ -6,7 +6,98 @@
 
 ### Task 1:  Frequency Analysis Against Monoalphabetic Substitution Cipher
 
-* Answer: The key of encryption is `vgapnbrtmosicuxejhqyzflkdw` corresponds to `abcdefghijklmnopqrstuvwxyz`
+* Answer: 
+
+  * The key of encryption is `vgapnbrtmosicuxejhqyzflkdw` corresponds to `abcdefghijklmnopqrstuvwxyz`
+
+  * Plaintext: 
+
+    ```
+    the oscars turn  on sunday which seems about right after this long strange
+    awards trip the bagger feels like a nonagenarian too
+    
+    the awards race was bookended by the demise of harvey weinstein at its outset
+    and the apparent implosion of his film company at the end and it was shaped by
+    the emergence of metoo times up blackgown politics armcandy activism and
+    a national conversation as brief and mad as a fever dream about whether there
+    ought to be a president winfrey the season didnt just seem extra long it was
+    extra long because the oscars were moved to the first weekend in march to
+    avoid conflicting with the closing ceremony of the winter olympics thanks
+    pyeongchang
+    
+    one big question surrounding this years academy awards is how or if the
+    ceremony will address metoo especially after the golden globes which became
+    a jubilant comingout party for times up the movement spearheaded by 
+    powerful hollywood women who helped raise millions of dollars to fight sexual
+    harassment around the country
+    
+    signaling their support golden globes attendees swathed themselves in black
+    sported lapel pins and sounded off about sexist power imbalances from the red
+    carpet and the stage on the air e was called out about pay inequity after
+    its former anchor catt sadler quit once she learned that she was making far
+    less than a male cohost and during the ceremony natalie portman took a blunt
+    and satisfying dig at the allmale roster of nominated directors how could
+    that be topped
+    
+    as it turns out at least in terms of the oscars it probably wont be
+    
+    women involved in times up said that although the globes signified the
+    initiatives launch they never intended it to be just an awards season
+    campaign or one that became associated only with redcarpet actions instead
+    a spokeswoman said the group is working behind closed doors and has since
+    amassed  million for its legal defense fund which after the globes was
+    flooded with thousands of donations of  or less from people in some 
+    countries
+    
+    
+    no call to wear black gowns went out in advance of the oscars though the
+    movement will almost certainly be referenced before and during the ceremony 
+    especially since vocal metoo supporters like ashley judd laura dern and
+    nicole kidman are scheduled presenters
+    
+    another feature of this season no one really knows who is going to win best
+    picture arguably this happens a lot of the time inarguably the nailbiter
+    narrative only serves the awards hype machine but often the people forecasting
+    the race socalled oscarologists can make only educated guesses
+    
+    the way the academy tabulates the big winner doesnt help in every other
+    category the nominee with the most votes wins but in the best picture
+    category voters are asked to list their top movies in preferential order if a
+    movie gets more than  percent of the firstplace votes it wins when no
+    movie manages that the one with the fewest firstplace votes is eliminated and
+    its votes are redistributed to the movies that garnered the eliminated ballots
+    secondplace votes and this continues until a winner emerges
+    
+    it is all terribly confusing but apparently the consensus favorite comes out
+    ahead in the end this means that endofseason awards chatter invariably
+    involves tortured speculation about which film would most likely be voters
+    second or third favorite and then equally tortured conclusions about which
+    film might prevail
+    
+    in  it was a tossup between boyhood and the eventual winner birdman
+    in  with lots of experts betting on the revenant or the big short the
+    prize went to spotlight last year nearly all the forecasters declared la
+    la land the presumptive winner and for two and a half minutes they were
+    correct before an envelope snafu was revealed and the rightful winner
+    moonlight was crowned
+    
+    this year awards watchers are unequally divided between three billboards
+    outside ebbing missouri the favorite and the shape of water which is
+    the baggers prediction with a few forecasting a hail mary win for get out
+    
+    but all of those films have historical oscarvoting patterns against them the
+    shape of water has  nominations more than any other film and was also
+    named the years best by the producers and directors guilds yet it was not
+    nominated for a screen actors guild award for best ensemble and no film has
+    won best picture without previously landing at least the actors nomination
+    since braveheart in  this year the best ensemble sag ended up going to
+    three billboards which is significant because actors make up the academys
+    largest branch that film while divisive also won the best drama golden globe
+    and the bafta but its filmmaker martin mcdonagh was not nominated for best
+    director and apart from argo movies that land best picture without also
+    earning best director nominations are few and far between
+    
+    ```
 
 * Explanation: I used the [online decrypting resource](<http://www.richkni.co.uk/php/crypta/freq.php>) to analyze the character frequency and compared it with the frequency [bigram](<https://en.wikipedia.org/wiki/Bigram>) and [trigram](<https://en.wikipedia.org/wiki/Trigram>). I also used the [word finder](<https://word.tips/>). By **selecting all the words with length two and three** and comparing the result, we can find that the most possible mapping is (`plain<=> cypher`): 
 
@@ -150,11 +241,18 @@
 
 * Explanation: ECB is basically raw cipher (i.e. same input and key will result into same cipher text) , while CBC is step-by-step cipher which takes the output of the previous cipher and performs XOR with a block of plaintext. The first output is produced by first plaintext block and initialization vector. Therefore, ECB will preserve some features of the original image, while CBC will not. 
 
+* My picture: 
+
+  ![Screen Shot 2020-03-03 at 5.05.26 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-03-03 at 5.05.26 PM.png)
+
+  * The results for `ecb` and `cbc` modes are both well encrypted. 
+  * The reason might be for this picture, the colors are more complex. For `aes` encryption, a little change on input will result in a slightly change in the output. Therefore, for areas that looks the same, the encrypted value is slightly different because there are some little differences. 
+
 ------------------------------------
 
 ### Task 4: Padding
 
-* Observation
+* Observation (for paddings, we can find repeat values at the end of the decrypt file)
 
   * ECB: Has padding
 
@@ -172,6 +270,15 @@
 
     ![1579413112390](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1579413112390.png)
 
+  * `5-bytes`, `10-bytes`, and `16-bytes`: 
+
+    ![Screen Shot 2020-03-04 at 10.56.30 AM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-03-04 at 10.56.30 AM.png)
+
+    ![Screen Shot 2020-03-04 at 10.58.32 AM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-03-04 at 10.58.32 AM.png)
+
+    * `5-bytes`, `10-bytes`, and `16-bytes` are decrypted to `16-bytes`, `16-bytes`, and `32-bytes` respectively. 
+    * The padding values are `0x0b = 11 = 16 - 5`, `0x06 = 6 = 16 - 10`, `0x10 = 16 = 32 - 16` respectively
+
 * Explanation: 
 
   * The block ciphers require specific block size. 
@@ -179,6 +286,8 @@
   * Once the plaintext is not dividable to equal-sized blocks, there will be exactly one smaller block, which will be the last block in the encryption pipeline. 
 
   * For modes CFB and OFB, the last block of plaintext will not be used by the block cipher (as shown below).
+
+  * Besides, CFB and OFB modes borrow the idea from stream cipher, stream cipher does not require the length of the plaintext. 
 
     ![Screen Shot 2020-01-19 at 3.47.57 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-01-19 at 3.47.57 PM.png)
 
@@ -216,7 +325,7 @@
 
       ![Screen Shot 2020-02-22 at 5.15.16 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-02-22 at 5.15.16 PM-2362934.png)
 
-    * CBC: The result is the same as I expected, only two blocks are corrupted. Besides, all bytes in the corrupted block is corrupted while only one byte in the next block is corrupted
+    * CBC: The result is the same as I expected, only two blocks are corrupted. Besides, **all bytes in the corrupted block is corrupted while only one byte in the next block is corrupted**
 
       ![Screen Shot 2020-02-22 at 5.11.05 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-02-22 at 5.11.05 PM-2362685.png)
 
@@ -224,13 +333,13 @@
 
       ![Screen Shot 2020-02-22 at 5.19.47 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-02-22 at 5.19.47 PM.png)
 
-    * OFB: The result is the same as I expected, only one block is corrupted. Besides, only one byte (the 55th) is corrupted
+    * OFB: The result is the same as I expected, **only one block is corrupted.** 
 
       ![Screen Shot 2020-02-22 at 5.21.33 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-02-22 at 5.21.33 PM.png)
 
-* Explanation (red color represents bit error):
+* Explanation (red color represents error):
 
-  * Notice that encryption function $E​$ and decryption function $D​$ makes sure **each bits of output are dependent to each bits of input**, while each bits of output of XOR is only dependent on two bits of two inputs. 
+  * Notice that encryption function $E$ and decryption function $D$ makes sure **each bits of output are dependent to each bits of input**, while each bits of output of XOR is only dependent on two bits of two inputs respectively. 
 
   * ECB: Because only $\color{red}{P_i} = D_k(\color{red}{C_i})​$ depends on the error block. 
 
@@ -250,7 +359,6 @@
     E^{(i+1)}_k\ represents\ apply\ encryption\ for\ i+1\ times
     $$
 
-
 -----------------------
 
 ### Task 6: Initial Vector (IV)
@@ -261,7 +369,7 @@
 
   ![Screen Shot 2020-02-22 at 6.10.43 PM](Deheng_Zhang-55199998-CS4293-Assignment1.assets/Screen Shot 2020-02-22 at 6.10.43 PM.png)
 
-* Explanation: IV should be unique to make sure the cipher text is different for two encryption with same plain text and key to avoid attacking. 
+* Explanation: Based on (2), IV should be unique to make sure the cipher text is different for two encryption with same plain text and key to avoid attacking such as linguistic analysis. 
 
 #### Task 6.2
 
@@ -286,7 +394,7 @@
    = P1_0 \oplus E(key, IV) \oplus P1_0 \oplus E(key, IV) \oplus P2_0 = P2_0 \\
   $$
 
-* Answer: $E(key, C1_0)$ and $E(key, C2_0)$ cannot be cancelled, therefore **only the first block can be revealed** 
+* Answer: $E(key, C1_0)$ and $E(key, C2_0)$ cannot be cancelled, therefore **only the first block can be easily revealed**. For following blocks, the encryption part cannot be cancelled. 
 
 #### Task 6.3
 
@@ -306,7 +414,7 @@
    = E(key, P1^\prime \oplus IV1)
   $$
 
-* We know that for 1-block aes, the outputs of same inputs are the same, therefore we check $C2 \oplus C1$, if the result is $0$, $P1$ is $Yes$, otherwise $P1$ is $No$ 
+* We know that for 1-block aes, the outputs of same inputs are the same, therefore we check whether $C2 = C1$, if the result is the same, $P1$ is $Yes$, otherwise $P1$ is $No$ 
 
 * Code
 
@@ -591,18 +699,18 @@
 
 * Observations: 
 
-  * For all the situations, the result of `md5sum` are the same
-  * **Most of the bytes are the same， most of the different bytes between two files for different prefix are the same**
+  * For all the cases the `md5sum` of generated two files are the same. 
+  * **Most of the bytes are the same, most of the different bytes between two files for different prefix are the same**
   * **If the x-th byte is different, then (x+64)-th byte is also different** 
-  * For the different values, the difference for most cases are 8*16 in decimal(**the second bits is changed**), if there are two consecutive different pairs, the difference between second pair is 1 in decimal (**the last bit is changed**) 
+  * Changed bits might be selected from a small set of bits
 
 * Answer: 
 
-  * Question 1: There are some zero paddings for the prefix, to make sure the prefix length is a multiple of 64
+  * Question 1: `md5sum` of generated two files are the same. There are some zero paddings for the prefix, to make sure the prefix length is a multiple of 64
 
     ![1582535425867](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582535425867.png)
 
-  * Question 2: There is no padding
+  * Question 2: `md5sum` of generated two files are the same. There is no padding
 
     ![1582535447408](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582535447408.png)
 
@@ -615,6 +723,8 @@
 * Experiment: 
 
   * `out1.bin, out2.bin` are generated by using same method in Task 8
+
+  * The hash values are the same if we concat same value to `out1.bin` and `out2.bin`
 
     ![1582537422568](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582537422568.png)
 
@@ -665,7 +775,7 @@
 
     ![1582538447172](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582538447172.png)
 
-  * $4161\ mod\ 64=1$, it is the first bit of the block
+  * $4161\ mod\ 64=1​$, it is the first bit of the block
 
   * prefix: $4160$ bytes, suffix $7636(total)-4160-200 = 3276$ bytes
 
@@ -673,7 +783,7 @@
 
     ![1582539624301](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582539624301.png)
 
-  * Obtain the final values:
+  * Obtain the final values according to the property:  $MD5(Prefix|P|Suffix)= MD5(Prefix|Q|Suffix) $ 
 
     ![1582539501272](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582539501272.png)
 
@@ -1263,7 +1373,7 @@
 
 * Observation
 
-  * With `srand`: Seems right, but there will be some duplicate random numbers if the program is executed to fast. 
+  * With `srand`: Seems right, but there will be some duplicate random numbers if the program is executed too fast. 
 
     ![1582607865308](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582607865308.png)
 
@@ -1273,7 +1383,7 @@
 
 * Explanation: 
 
-  * `srand` will pass a seed to the `c++` random number generator. And the `rand` function will generate a pseudo random number based on the given seed by using a hash function. 
+  * `srand` will pass a seed to the `c++` random number generator. And the `rand` function will generate a pseudo random number based on the given seed by using a hash function. The seed is determined if we do not explicitly give the seed to the system. 
   * `time` function is used to use the current time as the seed, since the number generating function is highly non-linear, the result will be partially “random”. 
 
 ---------
@@ -1427,11 +1537,19 @@
 
   ![1582611033077](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582611033077.png)
 
-* Result of the key: 
+* Result
 
-  ```
-  95FA2030E73ED3F8DA761B4EB805DFD7
-  ```
+  * Key: 
+
+    ```
+    95FA2030E73ED3F8DA761B4EB805DFD7
+    ```
+
+  * Time: 
+
+    ```
+    1524006529
+    ```
 
 * Test: 
 
@@ -1447,6 +1565,7 @@
 
   ![1582614224650](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582614224650.png)
 
+  * If I do nothing, the entropy increases slowly. 
   * Click mouse or type some things increase the entropy only a little
   * Move mouse will increase the entropy faster
   * Read large file, visit website, or watch a video on Youtube will increase the entropy significantly. 
@@ -1464,23 +1583,27 @@
 
 * Explanation: 
 
-  * `cat` and `hexdump` commands will read and write the random numbers, which may increase the `blkdev_randomness`
-  * If we **do not do any operation**, the speed of producing entropy by `cat` and `hexdump` command is slow. The value is not decreased because `/dev/random` is **blocked**. When the value reaches $64$, it will be read and printed, and the entropy is decreased to a small number closed to zero.
+  * If we **do not do any operation**, the speed of producing entropy by `cat` and `hexdump` command is slow. The value is not decreased because `/dev/random` is **blocked**. When the value reaches $64​$, it will be read and printed, and the entropy is decreased to a small number closed to zero.
   * If we **do some operation**, the speed of producing entropy is fast, therefore, the value of entropy starts to oscillate.
 
 * Launch DOS attack
 
-  * We can make a lot of authenticated connection with the server, because authenticated connection needs random number, it will decrease the value of entropy and block the `/dev/random`. 
+  * We can make a lot of connections which need authentication with the server, because authenticating connection needs random number, it will decrease the value of entropy and block the `/dev/random`. Now the if the user wants to initialize a new session, the server cannot respond the request because `/dev/random` is blocked. 
 
 --------------------
 
 ### Task 22: Get Random Numbers from `/dev/urandom `
 
+* Observation: `/dev/urandom` generates random number faster and more stable. 
+
 * Outcome of `ent`
 
-  ![1582616354945](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582616354945.png)
+  ![Screen Shot 2020-03-04 at 11.47.05 AM](../../../../../../Desktop/Screen Shot 2020-03-04 at 11.47.05 AM.png) 
 
-  * Entropy per byte is really close to the maximum value $8$, the mean value is close to the random mean value, and the number is nearly totally uncorrelated. 
+  * **Entropy per byte** is really close to the maximum value $8$
+  * According to **Chi square distribution**, the output is **almost suspect random**
+  * The **arithmetic mean value** is close to the random mean value
+  * The number is nearly totally uncorrelated according to the **serial correlation coefficient**. 
   * The quality of the random number is good
 
 * Code
