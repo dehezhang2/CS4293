@@ -125,7 +125,7 @@ int main(){
         }
       }
       if(same){
-        printf("%s", key2);
+        printf("Time: %lld, key: %s", i, key2);
       }
     } 
         
