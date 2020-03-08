@@ -1,0 +1,528 @@
+# Report of CS4293 Assignment 2
+
+[TOC]
+
+--------------------
+
+## 2 Environment Variable and Set-UID Program
+
+### 2.1 Manipulating environment variables
+
+* Result of running `printenv` and `printenv PWD` 
+
+  * `printenv`
+
+    ```
+    [03/07/20]seed@VM:~/.../assignment2$ printenv
+    
+    XDG_VTNR=7
+    
+    XDG_SESSION_ID=c1
+    
+    XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/seed
+    
+    CLUTTER_IM_MODULE=xim
+    
+    SESSION=ubuntu
+    
+    ANDROID_HOME=/home/seed/android/android-sdk-linux
+    
+    GPG_AGENT_INFO=/home/seed/.gnupg/S.gpg-agent:0:1
+    
+    TERM=xterm-256color
+    
+    VTE_VERSION=4205
+    
+    XDG_MENU_PREFIX=gnome-
+    
+    SHELL=/bin/bash
+    
+    DERBY_HOME=/usr/lib/jvm/java-8-oracle/db
+    
+    QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+    
+    LD_PRELOAD=/home/seed/lib/boost/libboost_program_options.so.1.64.0:/home/seed/lib/boost/libboost_filesystem.so.1.64.0:/home/seed/lib/boost/libboost_system.so.1.64.0
+    
+    WINDOWID=25165834
+    
+    UPSTART_SESSION=unix:abstract=/com/ubuntu/upstart-session/1000/1453
+    
+    GNOME_KEYRING_CONTROL=
+    
+    GTK_MODULES=gail:atk-bridge:unity-gtk-module
+    
+    USER=seed
+    
+    LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+    
+    QT_ACCESSIBILITY=1
+    
+    LD_LIBRARY_PATH=/home/seed/source/boost_1_64_0/stage/lib:/home/seed/source/boost_1_64_0/stage/lib:
+    
+    XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+    
+    XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+    
+    SSH_AUTH_SOCK=/run/user/1000/keyring/ssh
+    
+    DEFAULTS_PATH=/usr/share/gconf/ubuntu.default.path
+    
+    SESSION_MANAGER=local/VM:@/tmp/.ICE-unix/1767,unix/VM:/tmp/.ICE-unix/1767
+    
+    XDG_CONFIG_DIRS=/etc/xdg/xdg-ubuntu:/usr/share/upstart/xdg:/etc/xdg
+    
+    DESKTOP_SESSION=ubuntu
+    
+    PATH=/home/seed/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:.:/snap/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin:/home/seed/android/android-sdk-linux/tools:/home/seed/android/android-sdk-linux/platform-tools:/home/seed/android/android-ndk/android-ndk-r8d:/home/seed/.local/bin
+    
+    QT_IM_MODULE=ibus
+    
+    QT_QPA_PLATFORMTHEME=appmenu-qt5
+    
+    XDG_SESSION_TYPE=x11
+    
+    PWD=/home/seed/Desktop/CS4293/assignment/Experiment/assignment2
+    
+    JOB=dbus
+    
+    XMODIFIERS=@im=ibus
+    
+    JAVA_HOME=/usr/lib/jvm/java-8-oracle
+    
+    GNOME_KEYRING_PID=
+    
+    LANG=en_US.UTF-8
+    
+    GDM_LANG=en_US
+    
+    MANDATORY_PATH=/usr/share/gconf/ubuntu.mandatory.path
+    
+    COMPIZ_CONFIG_PROFILE=ubuntu
+    
+    IM_CONFIG_PHASE=1
+    
+    GDMSESSION=ubuntu
+    
+    SESSIONTYPE=gnome-session
+    
+    GTK2_MODULES=overlay-scrollbar
+    
+    SHLVL=1
+    
+    HOME=/home/seed
+    
+    XDG_SEAT=seat0
+    
+    LANGUAGE=en_US
+    
+    LIBGL_ALWAYS_SOFTWARE=1
+    
+    GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+    
+    XDG_SESSION_DESKTOP=ubuntu
+    
+    LOGNAME=seed
+    
+    DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-tme2LOGQ1A
+    
+    J2SDKDIR=/usr/lib/jvm/java-8-oracle
+    
+    XDG_DATA_DIRS=/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
+    
+    QT4_IM_MODULE=xim
+    
+    LESSOPEN=| /usr/bin/lesspipe %s
+    
+    INSTANCE=
+    
+    XDG_RUNTIME_DIR=/run/user/1000
+    
+    DISPLAY=:0
+    
+    XDG_CURRENT_DESKTOP=Unity
+    
+    GTK_IM_MODULE=ibus
+    
+    J2REDIR=/usr/lib/jvm/java-8-oracle/jre
+    
+    LESSCLOSE=/usr/bin/lesspipe %s %s
+    
+    XAUTHORITY=/home/seed/.Xauthority
+    
+    _=/usr/bin/printenv
+    
+    OLDPWD=/home/seed/Desktop/CS4293/assignment/Experiment
+    
+    
+    ```
+
+  * `printenv PWD`
+
+    ```
+    [03/07/20]seed@VM:~/.../assignment2$ printenv PWD
+    /home/seed/Desktop/CS4293/assignment/Experiment/assignment2
+    ```
+
+* Result of setting environment variable by using `export`, and unsetting environment variable by using `unset`
+
+  ![1583559609821](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583559609821.png)
+
+### 2.2 Environment variable and `Set-UID` Programs
+
+#### Step 1&2: Write the program and compile
+
+![1583560022968](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583560022968.png)
+
+#### Step 3: Change the variables
+
+* Back up `PATH`, `LD_LIBRARY_PATH`, and `ANY_NAME`
+
+  ```
+  PATH=/home/seed/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:.:/snap/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin:/home/seed/android/android-sdk-linux/tools:/home/seed/android/android-sdk-linux/platform-tools:/home/seed/android/android-ndk/android-ndk-r8d:/home/seed/.local/bin
+  
+  LD_LIBRARY_PATH = /home/seed/source/boost_1_64_0/stage/lib:/home/seed/source/boost_1_64_0/stage/lib:
+  
+  ```
+
+* Change the variable: As observed, the `PATH` variable contains some information used to display date. After we changing the variable, the date cannot be displayed.
+
+  ![1583562039965](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583562039965.png)
+
+* Run the `Set-UID` program `./foo`
+
+  ```
+  XDG_VTNR=7
+  XDG_SESSION_ID=c1
+  XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/seed
+  CLUTTER_IM_MODULE=xim
+  SESSION=ubuntu
+  ANDROID_HOME=/home/seed/android/android-sdk-linux
+  GPG_AGENT_INFO=/home/seed/.gnupg/S.gpg-agent:0:1
+  TERM=xterm-256color
+  VTE_VERSION=4205
+  XDG_MENU_PREFIX=gnome-
+  SHELL=/bin/bash
+  DERBY_HOME=/usr/lib/jvm/java-8-oracle/db
+  QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  WINDOWID=25165834
+  OLDPWD=/home/seed/Desktop/CS4293/assignment/Experiment/assignment2
+  UPSTART_SESSION=unix:abstract=/com/ubuntu/upstart-session/1000/1453
+  GNOME_KEYRING_CONTROL=
+  GTK_MODULES=gail:atk-bridge:unity-gtk-module
+  USER=seed
+  LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  QT_ACCESSIBILITY=1
+  XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  SSH_AUTH_SOCK=/run/user/1000/keyring/ssh
+  DEFAULTS_PATH=/usr/share/gconf/ubuntu.default.path
+  SESSION_MANAGER=local/VM:@/tmp/.ICE-unix/1767,unix/VM:/tmp/.ICE-unix/1767
+  XDG_CONFIG_DIRS=/etc/xdg/xdg-ubuntu:/usr/share/upstart/xdg:/etc/xdg
+  DESKTOP_SESSION=ubuntu
+  PATH=./
+  QT_IM_MODULE=ibus
+  QT_QPA_PLATFORMTHEME=appmenu-qt5
+  XDG_SESSION_TYPE=x11
+  PWD=/home/seed/Desktop/CS4293/assignment/Experiment/assignment2/task2.2
+  JOB=dbus
+  XMODIFIERS=@im=ibus
+  JAVA_HOME=/usr/lib/jvm/java-8-oracle
+  GNOME_KEYRING_PID=
+  LANG=en_US.UTF-8
+  GDM_LANG=en_US
+  MANDATORY_PATH=/usr/share/gconf/ubuntu.mandatory.path
+  COMPIZ_CONFIG_PROFILE=ubuntu
+  IM_CONFIG_PHASE=1
+  GDMSESSION=ubuntu
+  TEST=test
+  SESSIONTYPE=gnome-session
+  GTK2_MODULES=overlay-scrollbar
+  SHLVL=1
+  HOME=/home/seed
+  XDG_SEAT=seat0
+  LANGUAGE=en_US
+  LIBGL_ALWAYS_SOFTWARE=1
+  GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+  XDG_SESSION_DESKTOP=ubuntu
+  LOGNAME=seed
+  DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-tme2LOGQ1A
+  J2SDKDIR=/usr/lib/jvm/java-8-oracle
+  XDG_DATA_DIRS=/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
+  QT4_IM_MODULE=xim
+  LESSOPEN=| /usr/bin/lesspipe %s
+  INSTANCE=
+  XDG_RUNTIME_DIR=/run/user/1000
+  DISPLAY=:0
+  XDG_CURRENT_DESKTOP=Unity
+  GTK_IM_MODULE=ibus
+  J2REDIR=/usr/lib/jvm/java-8-oracle/jre
+  LESSCLOSE=/usr/bin/lesspipe %s %s
+  XAUTHORITY=/home/seed/.Xauthority
+  _=./foo
+  ```
+
+  * We cannot find the `LD_LIBRARY_PATH`. As a comparison, we recover the `PATH` variable and use `env` command. The behaviors are different. 
+
+    ![1583563299834](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583563299834.png)
+
+* **Observation**: As the result of the program to print the environment variables, we can find the variable `TEST`, and `PATH`, but we cannot find the variable `LD_LIBRARY_PATH`. The reason might be the `Ubuntu` has limited the privilege of `SET-UID` program, even if it has already changed to `root` process. 
+
+### 2.3 The `PATH` Environment variable and `Set-UID` Programs
+
+* `myls.c` program
+
+  ```
+  #include <stdio.h>
+  int main()
+  {
+      system("ls");
+      return 0;
+  }
+  ```
+
+* **Observation**: 
+
+  * Compile
+
+  ![1583580546586](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583580546586.png)
+
+  * Change owner to root
+
+  ![1583580599343](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583580599343.png)
+
+  * Export to `PATH`
+
+    ![1583580963029](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583580963029.png)
+
+* **Answer**
+
+  * I can let this `Set-UID` program run my code instead of `/bin/ls` 
+
+  * The code is running with the root privilege according to the `ls -al` command as well as the next example `ls.c` 
+
+    ![1583581178290](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583581178290.png)
+
+* `ls.c` program
+
+  ```c
+  #include <stdio.h>
+  int main()
+  {
+      printf("\nThis is my ls program\n");
+      printf("\nMy real uid is: %d\n", getuid());
+      printf("\nMy effective uid is: %d\n", geteuid());
+      return 0;
+  }
+  ```
+
+* **Observation**: After giving the `root` privilege to the executable `ls`, the real `uid `is not changed, while the effective `uid` is changed to 0 (i.e. the code is running with the root privilege)
+
+  * Compile and try `ls.c`
+
+    ![1583570589648](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583570589648.png)
+
+    ![1583570638258](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583570638258.png)
+
+  * Link to the `PATH` variable, `ls` command is replaced: 
+
+    ![1583571966910](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583571966910.png)
+
+* **Explanation**: According to the man page and the [online resource](<https://unixpapa.com/incnote/setuid.html>), The effective `uid` represents the privilege of the process, while the real `uid` is the actual `uid` of this process. After exporting the `PATH`, the `ls` command is replaced by the self-defined program. 
+
+  ![1583571041611](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583571041611.png)
+
+### 2.4 The `LD_PRELOAD` environment variable and `Set-UID` Programs
+
+#### Step 1: Change the linker
+
+* Back up `LD_PRELOAD`
+
+  ```
+  LD_PRELOAD=/home/seed/lib/boost/libboost_program_options.so.1.64.0:/home/seed/lib/boost/libboost_filesystem.so.1.64.0:/home/seed/lib/boost/libboost_system.so.1.64.0
+  ```
+
+* We can find that the behavior of `sleep` function is changed
+
+  ![1583573604157](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583573604157.png)
+
+#### Step 2: Run in different modes
+
+* Run as regular program and normal user
+
+  ![1583574439115](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583574439115.png)
+
+* Run as `root ` program and normal user
+
+  ![1583574466772](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583574466772.png)
+
+* Run as `root` program and `root` account
+
+  ![1583574608599](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583574608599.png)
+
+* Run as `user1` program and `user1` account
+
+  ![1583574847824](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583574847824.png)
+
+#### Step 3: Reason and Experiment
+
+* **Reason**: The reason of difference is the behavior of `sleep` function is changed to self-defined program only when we use the account that owning the executable `myprog`. 
+
+* **Experiment**: If we change the owner of `myprog` to `user1`, and execute it in `seed` and `root` account after exporting the `LD_PRELOAD` variable respectively. If the behavior remains the `sleep` function in C-library, the assumption is correct. The process is shown below: 
+
+  ![1583575463493](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583575463493.png)
+
+* **Explain**: The child process can only access the `LD_*` environment variables of the current user account. Because even if we changed the environment variable in the owner’s account, we still cannot replace the `sleep` function as shown bellow. 
+
+  ![1583581876386](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583581876386.png)
+
+  ![1583581970167](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583581970167.png)
+
+### 2.5 Invoking external programs using `system()` versus `execve()`
+
+#### Step 1: Compile and attack
+
+* Command line to compile the program and make it a `set-uid` program
+
+  ![1583583819048](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583583819048.png)
+
+  ![1583582285141](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583582285141.png)
+
+* **Answer**: 
+
+  * By assumption, we do not know the password for `sudo`. Therefore, we cannot change the function `system` or `execve` to our self-defined function. 
+  * Besides, the program uses the absolute path `/bin/cat`, we cannot redefine `cat` 
+  * However, we can append a command at the end of the `cat` command
+
+* Steps: 
+
+  * First, we set up a not writable file `test.txt` with mode `755` in the folder `test` with mode `744`, both of them belongs to `root` :
+
+    ![1583644673244](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583644673244.png)
+
+    ![1583644724440](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583644724440.png)
+
+  * Open a new terminal use the account `seed`: 
+
+    * As shown below, we can neither access into the folder nor use `cat` command to view the content. However, the `Set-UID` program `show` can be used to view the content: 
+
+      ![1583644974278](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583644974278.png)
+
+    * However, if we use the malicious input as following, we can delete the file which cannot be deleted originally. 
+
+      ![1583645338590](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583645338590.png)
+
+
+#### Step 2: Change to `execve`
+
+* **Observation**: If we replace the `system` function by the `execve` function, using previous method to attack **does not work**: 
+
+  ![1583645518082](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583645518082.png)
+
+* **Explanation**: The different result is because of the different way to accept the parameter for `system` and `execve`. `system `will accept a whole command and run it in a new shell.  Therefore, if we append some malicious command at the end of the previous command, it can be executed since it is a `Set-UID` program. However, `execve` takes the command and the operator separately. It makes sure that only one command is executed. 
+
+### 2.6 Capability Leaking
+
+* Create `/etc/zzz`:
+
+  ![1583646989069](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583646989069.png)
+
+* `Set-UID`: 
+
+  ![1583647068898](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583647068898.png)
+
+* Execute the program as a normal user:
+
+  ![1583647221054](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583647221054.png)
+
+* **Observation**: The `/etc/zzz` file is modified.
+
+* **Explanation**: 
+
+  * If we print the `uid` and effective `uid` of parent and child process, we can find that all the `uid` are changed to `1000`
+
+    ![1583647518870](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583647518870.png)
+
+  * For some capabilities given to the process (opened file in this case), if we do not clean up them, they will also be kept for the parent process as well as the child process even if we have changed the `uid` of the process. 
+
+  * If we change the code to close the file before `setuid`: 
+
+    * Code
+
+      ```CQL
+      #include <stdio.h>
+      #include <stdlib.h>
+      #include <fcntl.h>
+      
+      int main(){
+      	int fd;
+      	/* Assume that /etc/zzz is an important system file,
+      	* and it is owned by root with permission 0644.
+      	* Before running this program, you should creat
+      	* the file /etc/zzz first. */
+      	fd = open("/etc/zzz", O_RDWR | O_APPEND);
+      	if (fd == -1) {
+      		printf("Cannot open /etc/zzz\n");
+      		exit(0);
+      	}
+      
+      	/* Simulate the tasks conducted by the program */
+      	sleep(1);
+      	close (fd);
+      	/* After the task, the root privileges are no longer needed,
+      	it's time to relinquish the root privileges permanently. */
+      	setuid(getuid()); /* getuid() returns the real uid */
+      	
+      	if (fork()) { /* In the parent process */
+      		printf("Parent's uid: %d\n", getuid());
+      		printf("Parent's effective uid: %d\n", geteuid());
+      		// write (fd, "Malicious Data\n", 15);
+      		close (fd);
+      		exit(0);
+      	} else { /* in the child process */
+      		/* Now, assume that the child process is compromised, malicious
+      		attackers have injected the following statements
+      		into this process */
+      		printf("Child's uid: %d\n", getuid());
+      		printf("Child's effective uid: %d\n", geteuid());
+      		fd = open("/etc/zzz", O_RDWR | O_APPEND);
+      		write (fd, "Malicious Data\n", 15);
+      		close (fd);
+      	}
+      	return 0;
+      }
+      ```
+
+    * Result: The file is not changed. 
+
+      ![1583649668628](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583649668628.png)
+
+----------------------
+
+## 3 Buffer Overflow Vulnerability
+
+### 3.2 Running Shellcode
+
+* **Observation**: The shell is invoked. By observation, the shell can be recursively invoked. However, some command cannot be used and some keyboard mappings are changed. 
+
+  ![1583651157264](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583651157264.png)
+
+### 3.4 Exploiting the Vulnerability
+
+
+
+### 3.5 Defeating dash’s Countermeasure
+
+
+
+### 3.6 Defeating Address Randomization
+
+
+
+### 3.7 Stack Guard Protection
+
+
+
+### 3.8 Non-executable Stack Protection
+
+
+
