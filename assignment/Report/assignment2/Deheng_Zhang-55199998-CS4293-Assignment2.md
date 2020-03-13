@@ -508,7 +508,29 @@
 
 ### 3.4 Exploiting the Vulnerability
 
+#### Set Up
 
+* Compile the `stack.c`
+
+  ![Screen Shot 2020-03-13 at 9.07.06 PM](assets/Screen Shot 2020-03-13 at 9.07.06 PM.png)
+
+#### Task A: Distance Between Buffer Base Address and Return Address
+
+* Set breakpoint
+
+  ![Screen Shot 2020-03-13 at 9.17.22 PM](assets/Screen Shot 2020-03-13 at 9.17.22 PM.png)
+
+* Print `buffer` and `ebp` address, calculate the distance
+
+  ![Screen Shot 2020-03-13 at 9.21.28 PM](assets/Screen Shot 2020-03-13 at 9.21.28 PM.png)
+
+#### TaskB: Address of Malicious Code
+
+* Find the address of malicious code
+
+  ![Screen Shot 2020-03-13 at 10.24.33 PM](assets/Screen Shot 2020-03-13 at 10.24.33 PM.png)
+
+* 
 
 ### 3.5 Defeating dash’s Countermeasure
 
