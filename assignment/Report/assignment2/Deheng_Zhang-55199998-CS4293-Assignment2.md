@@ -589,17 +589,85 @@
 
 ### 3.5 Defeating dash’s Countermeasure
 
+* **Observation**: Countermeasure in `dash`
 
+  * Comment `line 11`: The initialized shell does not have root privilege
+
+    ![1584175671184](assets/1584175671184.png)
+
+  * Uncomment `line 11`: The initialized shell has root privilege
+
+    ![1584175818553](assets/1584175818553.png)
+
+* **Result**: Use the new shellcode in **task 3.4**
+
+  * Do not use the new shellcode: Cannot get the root privilege
+
+    ![1584176046464](assets/1584176046464.png)
+
+  * Use the new shellcode: Can get the root privilege
+
+    ![1584176114967](assets/1584176114967.png)
+
+* **Explanation**: The `dash` countermeasure can detect the case when `euid` is different with `uid`, and prevent it. However, by setting actual `uid` to `root` when the program is having the `root` privilege, we can defeat this countermeasure. Therefore, with the part of assembly code to set `uid` to `root` written to the malicious file, we can get the `root `privilege shell. 
 
 ### 3.6 Defeating Address Randomization
 
+* Answer of the first **Report**
 
+  * After turning on the Ubuntu’s address randomization, the same attack does not work. 
+
+  * The problem is the return address may not be valid when we use address randomization. Even the address is valid, the order of the `shellcode` might be randomized. 
+
+  * According to [Wikipedia](<https://en.wikipedia.org/wiki/Address_space_layout_randomization>), ASLR randomly arranges the [address space](https://en.wikipedia.org/wiki/Address_space) positions of key data areas of a [process](https://en.wikipedia.org/wiki/Process_(computer_science)), including the base of the [executable](https://en.wikipedia.org/wiki/Executable) and the positions of the [stack](https://en.wikipedia.org/wiki/Stack-based_memory_allocation), [heap](https://en.wikipedia.org/wiki/Dynamic_memory_allocation) and [libraries](https://en.wikipedia.org/wiki/Library_(computer_science)). Therefore, we may not that lucky to return to a valid address. 
+
+    ![1584176594817](assets/1584176594817.png)
+
+* Answer of the second **Report**
+
+  * **Observation**: By following the instruction, I successfully get `root` privilege shell after running `exploit` for `18720` times. 
+  * **Explanation**: Since the address is randomly assigned, we may still be lucky to find right return address and successfully run the `shellcode`. 
+
+  ![1584178058740](assets/1584178058740.png)
 
 ### 3.7 Stack Guard Protection
 
+* Result: The `stack` program without stack protector can launch the attack, while the `stack_prot` with stack protector will have `Segmentation fault` error message
 
+  ![1584178224955](assets/1584178224955.png)
 
 ### 3.8 Non-executable Stack Protection
+
+* Answer of **report**:
+
+  * **Observation**: Cannot get a shell. There is `segmentation fault` error message
+  * **Explanation**: This scheme make the memory address allocated to the `str` not executable, therefore the shellcode is difficult to be executed
+
+  ![1584181224385](assets/1584181224385.png)
+
+----------------------------------
+
+## 4 Return-to-libc Attack
+
+### 4.3 Exploiting the Vulnerability [4 Marks]
+### 4.4 Putting the shell string in the memory [5 Marks]
+### 4.5 Exploiting the Vulnerability [6 Marks]
+
+### 4.6 Address Randomization [3 Marks]
+### 4.7 Stack Guard Protection [3 Marks]
+
+
+----------------------
+
+## 5 Format String Vulnerability
+
+
+
+-------------------
+
+## 6 Race Condition Vulnerability
+
+
 
 
 
