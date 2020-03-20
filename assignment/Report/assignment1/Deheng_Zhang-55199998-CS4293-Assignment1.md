@@ -359,6 +359,7 @@
     E^{(i+1)}_k\ represents\ apply\ encryption\ for\ i+1\ times
     $$
 
+
 -----------------------
 
 ### Task 6: Initial Vector (IV)
@@ -1298,7 +1299,7 @@
 
 #### Step 4: Extract the body of the server’s certificate
 
-* The body of the CA’s Signature($M$): 
+* The body of the CA’s Signature ($M$): 
 
   ![1582563531210](Deheng_Zhang-55199998-CS4293-Assignment1.assets/1582563531210.png)
 

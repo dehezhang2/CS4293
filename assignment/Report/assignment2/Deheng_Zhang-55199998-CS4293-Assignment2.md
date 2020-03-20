@@ -656,12 +656,39 @@
 ### 4.6 Address Randomization [3 Marks]
 ### 4.7 Stack Guard Protection [3 Marks]
 
-
 ----------------------
 
 ## 5 Format String Vulnerability
 
+### 5.1 Crash the program [4 Marks]
 
+![1584724808235](assets/1584724808235.png)
+
+### 5.2 Print out the secret[1] value [4 Marks]
+
+* Find the address of `user_input`
+
+  ![1584726480953](assets/1584726480953.png)
+
+* `secret[0]` as well as the heap address of `secret[1]`
+
+  ![1584725404839](assets/1584725404839.png)
+
+* Find out the position of the integer number `int_input`
+
+  ![1584726787733](assets/1584726787733.png)
+
+* Print the value of `secret[1]`
+
+  ![1584726918760](assets/1584726918760.png)
+
+### 5.3 Modify the secret[1] value [5 Marks]
+
+![1584727008014](assets/1584727008014.png)
+
+### 5.4 Modify the secret[1] value to a pre-determined value, i.e., 80 in decimal [5 Marks]
+
+![1584727164693](assets/1584727164693.png)
 
 -------------------
 
