@@ -265,7 +265,7 @@
 
     ![1583563299834](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583563299834.png)
 
-* **Observation**: As the result of the program to print the environment variables, we can find the variable `TEST`, and `PATH`, but we cannot find the variable `LD_LIBRARY_PATH`. The reason might be the `Ubuntu` has limited the privilege of `SET-UID` program, even if it has already changed to `root` process. 
+* **Observation**: As the result of the program to print the environment variables, we can find the variable `TEST`, and `PATH`, but we cannot find the variable `LD_LIBRARY_PATH`. The reason might be the `Ubuntu` has limited the privilege of `SET-UID` program, even if it has already changed to `root` process. The reason to do this might be to prevent the situation that unknown resources are imported easily.
 
 ### 2.3 The `PATH` Environment variable and `Set-UID` Programs
 
@@ -315,7 +315,7 @@
   }
   ```
 
-* **Observation**: After giving the `root` privilege to the executable `ls`, the real `uid `is not changed, while the effective `uid` is changed to 0 (i.e. the code is running with the root privilege)
+* **Observation**: It is not run in root privilege by default. However, after giving the `root` privilege to the executable `ls`, the real `uid `is not changed, while the effective `uid` is changed to 0 (i.e. the code is running with the root privilege)
 
   * Compile and try `ls.c`
 
@@ -347,25 +347,25 @@
 
 #### Step 2: Run in different modes
 
-* Run as regular program and normal user
+* Run as regular program and normal user: use user defined version
 
   ![1583574439115](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583574439115.png)
 
-* Run as `root ` program and normal user
+* Run as `root ` program and normal user: use system defined version
 
   ![1583574466772](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583574466772.png)
 
-* Run as `root` program and `root` account
+* Run as `root` program and `root` account: use user defined version
 
   ![1583574608599](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583574608599.png)
 
-* Run as `user1` program and `user1` account
+* Run as `user1` program and `user1` account: use user defined version
 
   ![1583574847824](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583574847824.png)
 
 #### Step 3: Reason and Experiment
 
-* **Reason**: The reason of difference is the behavior of `sleep` function is changed to self-defined program only when we use the account that owning the executable `myprog`. 
+* **Reason**: The reason of difference is the behavior of `sleep` function is changed to self-defined program only when we use the account that owning the executable `myprog`.  **The environment variable is not considered when the account executing the file is not the owner.** 
 
 * **Experiment**: If we change the owner of `myprog` to `user1`, and execute it in `seed` and `root` account after exporting the `LD_PRELOAD` variable respectively. If the behavior remains the `sleep` function in C-library, the assumption is correct. The process is shown below: 
 
@@ -407,7 +407,7 @@
 
       ![1583644974278](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583644974278.png)
 
-    * However, if we use the malicious input as following, we can delete the file which cannot be deleted originally. 
+    * However, if we use the malicious input as following, we can delete the file which cannot be deleted originally as shown below. 
 
       ![1583645338590](Deheng_Zhang-55199998-CS4293-Assignment2.assets/1583645338590.png)
 
@@ -617,31 +617,33 @@
 
   * After turning on the Ubuntu’s address randomization, the same attack does not work. 
 
-  * The problem is the return address may not be valid when we use address randomization. Even the address is valid, the order of the `shellcode` might be randomized. 
+  * Problem: The problem is the return address may not be valid when we use address randomization. Even the address is valid, the order of the `shellcode` might be randomized. 
 
-  * According to [Wikipedia](<https://en.wikipedia.org/wiki/Address_space_layout_randomization>), ASLR randomly arranges the [address space](https://en.wikipedia.org/wiki/Address_space) positions of key data areas of a [process](https://en.wikipedia.org/wiki/Process_(computer_science)), including the base of the [executable](https://en.wikipedia.org/wiki/Executable) and the positions of the [stack](https://en.wikipedia.org/wiki/Stack-based_memory_allocation), [heap](https://en.wikipedia.org/wiki/Dynamic_memory_allocation) and [libraries](https://en.wikipedia.org/wiki/Library_(computer_science)). Therefore, we may not that lucky to return to a valid address. 
+  * Why difficult: According to [Wikipedia](<https://en.wikipedia.org/wiki/Address_space_layout_randomization>), ASLR randomly arranges the [address space](https://en.wikipedia.org/wiki/Address_space) positions of key data areas of a [process](https://en.wikipedia.org/wiki/Process_(computer_science)), including the base of the [executable](https://en.wikipedia.org/wiki/Executable) and the positions of the [stack](https://en.wikipedia.org/wiki/Stack-based_memory_allocation), [heap](https://en.wikipedia.org/wiki/Dynamic_memory_allocation) and [libraries](https://en.wikipedia.org/wiki/Library_(computer_science)). Therefore, we may not that lucky to return to a valid address. 
 
     ![1584176594817](assets/1584176594817.png)
 
 * Answer of the second **Report**
 
   * **Observation**: By following the instruction, I successfully get `root` privilege shell after running `exploit` for `18720` times. 
-  * **Explanation**: Since the address is randomly assigned, we may still be lucky to find right return address and successfully run the `shellcode`. 
+  * **Explanation**: Since the address is to shift the memory slot instead of true randomization, we may still be lucky to find right return address and successfully run the `shellcode`. 
 
   ![1584178058740](assets/1584178058740.png)
 
 ### 3.7 Stack Guard Protection
 
-* Result: The `stack` program without stack protector can launch the attack, while the `stack_prot` with stack protector will have `Segmentation fault` error message
+* Result: The `stack` program without stack protector can launch the attack, while the `stack_prot` with stack protector will have `stack smashing detected` error message
 
-  ![1584178224955](assets/1584178224955.png)
+* Explanation: Stack guard will detect the change in the canary. Buffer overflow will overwrite the canary, therefore, the integrity of the stack is compromised, which will be detected by the stack guard.
+
+  ![1586667184614](assets/1586667184614.png)
 
 ### 3.8 Non-executable Stack Protection
 
 * Answer of **report**:
 
   * **Observation**: Cannot get a shell. There is `segmentation fault` error message
-  * **Explanation**: This scheme make the memory address allocated to the `str` not executable, therefore the shellcode is difficult to be executed
+  * **Explanation**: This scheme make the memory address allocated to the `str` not executable (since it is in the stack area), therefore the shellcode is difficult to be executed
 
   ![1584181224385](assets/1584181224385.png)
 
@@ -733,7 +735,7 @@
 
     ![1586167767226](assets/1586167767226.png)
 
-  * Explanation: If we don’t set the return address of `system ` function, it will return to some random memory location after the `system` function has been finished
+  * Explanation: If we don’t set the return address of `system ` function, it will return to some random memory location after the `system` function has been finished.
 
 * If we change the length of the filename
 
@@ -749,7 +751,7 @@
 
   ![1586168613316](assets/1586168613316.png)
 
-* Explanation: As shown in the following experiment, the address of the environment variable has been randomly allocated. 
+* Explanation: As shown in the following experiment, the address of the environment variable has been randomly allocated. The address randomization will change the memory location including shared library and environment variable.
 
   ![1586169271716](assets/1586169271716.png)
 
@@ -876,9 +878,9 @@
 
 ### 6.6 Countermeasure: Using Ubuntu’s Built-in Scheme [3 Marks]
 
-* Observation: The attack is failed and results in segmentation fault. 
+* Observation: Race condition attack does not work in five minutes. 
 
-  ![1586181759534](assets/1586181759534.png)
+  ![1586667459658](assets/1586667459658.png)
 
 * How does this protection scheme work?
 
@@ -889,6 +891,7 @@
 * What are the limitations of this scheme?
 
   * It is still vulnerable once the users can create symlink by using another setuid program (says by using buffer overflow)
+  * This scheme is only applied to a world writable sticky directory
 
 
 
